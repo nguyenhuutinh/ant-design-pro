@@ -6,6 +6,9 @@
   "scripts": {
     "presite": "cd functions && npm install",
     "start": "cross-env APP_TYPE=site umi dev",
+    
+    "qc": "cross-env MOCK=none umi build; rsync -e 'ssh -p 2222' -azP dist root@139.99.45.205:/home/demowebsite.shop/public_html/",
+    "prod": "UMI_ENV=prod umi build; rsync -azP dist deploy@admin.supercab.com.hk:/home/supercab.info/public_html",
     "start:no-mock": "cross-env MOCK=none umi dev",
     "build": "umi build",
     "site": "npm run presite && cross-env APP_TYPE=site npm run build && firebase deploy && npm run docker:push",
@@ -58,8 +61,7 @@
     "react-document-title": "^2.0.3",
     "react-dom": "^16.7.0",
     "react-fittext": "^1.0.0",
-    "react-media": "^1.9.2",
-    "react-router-dom": "5.0.0"
+    "react-media": "^1.9.2"
   },
   "devDependencies": {
     "@types/react": "^16.8.8",
