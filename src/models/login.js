@@ -29,7 +29,7 @@ export default {
       // Login successfully
       token.save(response.data.token.accessToken);
       token.saveUID(response.data.user.id);
-      
+
       if (response.data !== null) {
         reloadAuthorized();
         const urlParams = new URL(window.location.href);
@@ -80,11 +80,11 @@ export default {
       }
     },
     *fetchCurrentUser(_, { call, put }) {
-      if(token.get() == null || token.get() === ''){
-          console.log("error token null")
-          return;
+      if (token.get() == null || token.get() === '') {
+        console.log('error token null');
+        return;
       }
-      var payload = token.getUID()
+      var payload = token.getUID();
       const response = yield call(queryCurrent, payload);
 
       if (response) {
@@ -104,8 +104,13 @@ export default {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-
-      setAuthority(payload.role ? payload.role : payload.data && payload.data.user && payload.data.user.role ? payload.data.user.role : "guest");
+      setAuthority(
+        payload.role
+          ? payload.role
+          : payload.data && payload.data.user && payload.data.user.role
+          ? payload.data.user.role
+          : 'guest'
+      );
       return {
         ...state,
         status: payload.status,

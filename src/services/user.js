@@ -18,17 +18,18 @@ export async function queryCustomer() {
 export async function removeCustomer(params) {
   return request('/api/v1/sale/product', {
     method: 'POST',
-    body: {
+    data: {
       ...params,
       method: 'delete',
     },
+    headers: {Authorization : `Bearer ${token.get()}`}
   });
 }
 
 export async function addCustomer(params) {
   return request('/api/v1/sale/product', {
     method: 'POST',
-    body: {
+    data: {
       ...params,
       method: 'post',
     },
@@ -38,7 +39,7 @@ export async function addCustomer(params) {
 export async function updateCustomer(params = {}) {
   return request(`/api/v1/sale/product?${stringify(params.query)}`, {
     method: 'POST',
-    body: {
+    data: {
       ...params.body,
       method: 'update',
     },

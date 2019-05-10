@@ -10,7 +10,6 @@ function AuthComponent({ children, location, routerData, status }) {
   const isLogin = status === true;
 
   const getRouteAuthority = (path, routeData) => {
-    
     let authorities;
     routeData.forEach(route => {
       // match prefix

@@ -3,19 +3,20 @@ export default [
   {
     path: '/user',
     component: '../layouts/UserLayout',
-    routes: [{
+    routes: [
+      {
         path: '/user',
-        redirect: '/user/login'
+        redirect: '/user/login',
       },
       {
         path: '/user/login',
         name: 'login',
-        component: './User/Login'
+        component: './User/Login',
       },
       {
         path: '/user/register',
         name: 'register',
-        component: './User/Register'
+        component: './User/Register',
       },
       {
         path: '/user/register-result',
@@ -37,7 +38,7 @@ export default [
       // { path: '/', redirect: '/dashboard/analysis', authority: ['admin', 'user'] },
       {
         path: '/',
-        redirect: '/import/products'
+        redirect: '/import/products',
       },
       // {
       //   path: '/dashboard',
@@ -114,7 +115,8 @@ export default [
         name: 'import',
         icon: 'profile',
         authority: ['admin_import', 'admin_super'],
-        routes: [{
+        routes: [
+          {
             path: '/import/products',
             name: 'products',
             component: './Import/Product/TableList',
@@ -123,22 +125,22 @@ export default [
             path: '/import/orders',
             name: 'orders',
             // component: './Orders/TableList',
-            routes: [{
+            routes: [
+              {
                 path: '/import/orders',
                 name: 'orders',
                 component: './Import/Orders/TableList',
-                hideInMenu: true
+                hideInMenu: true,
               },
               {
-
                 path: '/import/orders/:id',
                 name: 'orderdetail',
                 component: './Import/Orders/$id/OrderDetail',
-                hideInMenu: true
+                hideInMenu: true,
               },
-            ]
-          }
-        ]
+            ],
+          },
+        ],
       },
       {
         path: '/sales',
@@ -160,22 +162,22 @@ export default [
             path: '/sales/orders',
             name: 'orders',
             // component: './Orders/TableList',
-            routes: [{
+            routes: [
+              {
                 path: '/sales/orders',
                 name: 'orders',
                 component: './Sales/Orders/TableList',
-                hideInMenu: true
+                hideInMenu: true,
               },
               {
-
                 path: '/sales/orders/:id',
                 name: 'orderdetail',
                 component: './Sales/Orders/$id/OrderDetail',
-                hideInMenu: true
+                hideInMenu: true,
               },
-            ]
-          }
-        ]
+            ],
+          },
+        ],
       },
       //     // profile
       //     {

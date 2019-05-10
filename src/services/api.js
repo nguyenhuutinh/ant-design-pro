@@ -62,8 +62,6 @@ export async function updateFakeList(params) {
   });
 }
 
-
-
 export async function fakeRegister(params) {
   return request('/api/register', {
     method: 'POST',
@@ -79,26 +77,23 @@ export async function getFakeCaptcha(mobile) {
   return request(`/api/captcha?mobile=${mobile}`);
 }
 
-
-
 // My API
-
 
 export async function postLogin(params) {
   return request('/api/v1/auth/login', {
     method: 'POST',
-    body: params,
+    data: params,
   });
 }
 
-export async function   queryImportProduct(params) {
+export async function queryImportProduct(params) {
   return request(`/api/v1/import/products?${stringify(params)}`);
 }
 
 export async function removeImportProduct(params) {
   return request('/api/v1/import/product', {
     method: 'POST',
-    body: {
+    data: {
       ...params,
       method: 'delete',
     },
@@ -108,7 +103,7 @@ export async function removeImportProduct(params) {
 export async function addImportProduct(params) {
   return request('/api/v1/import/product', {
     method: 'POST',
-    body: {
+    data: {
       ...params,
       method: 'post',
     },
@@ -118,14 +113,12 @@ export async function addImportProduct(params) {
 export async function updateImportProduct(params = {}) {
   return request(`/api/v1/import/product?${stringify(params.query)}`, {
     method: 'POST',
-    body: {
+    data: {
       ...params.body,
       method: 'update',
     },
   });
 }
-
-
 
 export async function querySaleProduct(params) {
   return request(`/api/v1/sale/products?${stringify(params)}`);
@@ -134,7 +127,7 @@ export async function querySaleProduct(params) {
 export async function removeSaleProduct(params) {
   return request('/api/v1/sale/product', {
     method: 'POST',
-    body: {
+    data: {
       ...params,
       method: 'delete',
     },
@@ -144,7 +137,7 @@ export async function removeSaleProduct(params) {
 export async function addSaleProduct(params) {
   return request('/api/v1/sale/product', {
     method: 'POST',
-    body: {
+    data: {
       ...params,
       method: 'post',
     },
@@ -154,7 +147,7 @@ export async function addSaleProduct(params) {
 export async function updateSaleProduct(params = {}) {
   return request(`/api/v1/sale/product?${stringify(params.query)}`, {
     method: 'POST',
-    body: {
+    data: {
       ...params.body,
       method: 'update',
     },
@@ -168,7 +161,7 @@ export async function querySaleOrders(params) {
 export async function removeSaleOrder(params) {
   return request('/api/v1/sale/orders', {
     method: 'POST',
-    body: {
+    data: {
       ...params,
       method: 'delete',
     },
@@ -178,7 +171,7 @@ export async function removeSaleOrder(params) {
 export async function addSaleOrder(params) {
   return request('/api/v1/sale/orders', {
     method: 'POST',
-    body: {
+    data: {
       ...params,
       method: 'post',
     },
@@ -188,19 +181,16 @@ export async function addSaleOrder(params) {
 export async function updateSaleOrder(params = {}) {
   return request(`/api/v1/sale/orders?${stringify(params.query)}`, {
     method: 'POST',
-    body: {
+    data: {
       ...params.body,
       method: 'update',
     },
   });
 }
 
-
 export async function querySaleOrderDetail(params) {
   return request(`/api/v1/sale/orders/${params}`);
 }
-
-
 
 export async function queryImportOrders(params) {
   return request(`/api/v1/import/orders?${stringify(params)}`);
@@ -209,7 +199,7 @@ export async function queryImportOrders(params) {
 export async function removeImportOrder(params) {
   return request('/api/v1/import/orders', {
     method: 'POST',
-    body: {
+    data: {
       ...params,
       method: 'delete',
     },
@@ -219,7 +209,7 @@ export async function removeImportOrder(params) {
 export async function addImportOrder(params) {
   return request('/api/v1/import/orders', {
     method: 'POST',
-    body: {
+    data: {
       ...params,
       method: 'post',
     },
@@ -229,13 +219,12 @@ export async function addImportOrder(params) {
 export async function updateImportOrder(params = {}) {
   return request(`/api/v1/import/orders?${stringify(params.query)}`, {
     method: 'POST',
-    body: {
+    data: {
       ...params.body,
       method: 'update',
     },
   });
 }
-
 
 export async function queryImportOrderDetail(params) {
   return request(`/api/v1/import/orders/${params}`);
@@ -244,6 +233,6 @@ export async function queryImportOrderDetail(params) {
 export async function fakeSubmitForm(params) {
   return request('/api/forms', {
     method: 'POST',
-    body: params,
+    data: params,
   });
 }

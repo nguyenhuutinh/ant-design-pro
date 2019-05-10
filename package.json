@@ -6,7 +6,6 @@
   "scripts": {
     "presite": "cd functions && npm install",
     "start": "cross-env APP_TYPE=site umi dev",
-    
     "qc": "cross-env MOCK=none umi build; rsync -e 'ssh -p 2222' -azP dist root@139.99.45.205:/home/demowebsite.shop/public_html/",
     "prod": "UMI_ENV=prod umi build; rsync -azP dist deploy@admin.supercab.com.hk:/home/supercab.info/public_html",
     "start:no-mock": "cross-env MOCK=none umi dev",
@@ -41,18 +40,9 @@
     "tslint:fix": "tslint --fix 'src/**/*.ts*'"
   },
   "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint-staged"
-    }
+    
   },
-  "lint-staged": {
-    "**/*.less": "stylelint --syntax less",
-    "**/*.{js,jsx}": "npm run lint-staged:js",
-    "**/*.{js,ts,tsx,json,jsx,less}": [
-      "node ./scripts/lint-prettier.js",
-      "git add"
-    ]
-  },
+  
   "browserslist": [
     "> 1%",
     "last 2 versions",
@@ -88,21 +78,21 @@
     "react-fittext": "^1.0.0",
     "react-media": "^1.9.2",
     "resize-observer-polyfill": "^1.5.1",
-    "umi": "^2.4.4",
+    "umi": "^2.6.17",
     "umi-plugin-react": "^1.7.2",
-    "umi-request": "^1.0.5"
+    "umi-request": "^1.0.7"
   },
   "devDependencies": {
     "@types/history": "^4.7.2",
-    "@types/react": "^16.8.1",
-    "@types/react-dom": "^16.0.11",
+    "@types/react": "^16.8.17",
+    "@types/react-dom": "^16.8.4",
     "antd-pro-merge-less": "^1.0.0",
     "antd-theme-webpack-plugin": "^1.2.0",
     "babel-eslint": "^10.0.1",
     "chalk": "^2.4.2",
-    "check-prettier": "^1.0.1",
+    "check-prettier": "^1.0.3",
     "cross-env": "^5.2.0",
-    "cross-port-killer": "^1.0.1",
+    "cross-port-killer": "^1.1.1",
     "enzyme": "^3.9.0",
     "eslint": "^5.13.0",
     "eslint-config-airbnb": "^17.1.0",
@@ -119,7 +109,7 @@
     "jsdom-global": "^3.0.2",
     "less": "^3.9.0",
     "lint-staged": "^8.1.1",
-    "merge-umi-mock-data": "^1.0.4",
+    "merge-umi-mock-data": "^1.0.5",
     "mockjs": "^1.0.1-beta3",
     "prettier": "^1.17.0",
     "serverless-http": "^2.0.1",
@@ -131,9 +121,9 @@
     "stylelint-config-standard": "^18.2.0",
     "stylelint-declaration-block-no-ignored-properties": "^2.1.0",
     "stylelint-order": "^2.0.0",
-    "tslint": "^5.12.1",
+    "tslint": "^5.16.0",
     "tslint-config-prettier": "^1.17.0",
-    "tslint-react": "^3.6.0",
+    "tslint-react": "^4.0.0",
     "umi-plugin-ga": "^1.1.3"
   },
   "optionalDependencies": {
