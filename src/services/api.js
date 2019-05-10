@@ -55,8 +55,8 @@ export async function updateFakeList(params) {
   const { count = 5, ...restParams } = params;
   return request(`/api/fake_list?count=${count}`, {
     method: 'POST',
-    body: {
-      ...restParams,
+    data: {
+      ...params.body,
       method: 'update',
     },
   });
@@ -67,7 +67,7 @@ export async function updateFakeList(params) {
 export async function fakeRegister(params) {
   return request('/api/register', {
     method: 'POST',
-    body: params,
+    data: params,
   });
 }
 

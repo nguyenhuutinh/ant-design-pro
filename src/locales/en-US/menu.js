@@ -47,4 +47,8 @@ export default {
   'menu.import.orders':'Đơn Hàng',
   'menu.sales.orders.orderdetail':'Chi Tiết Đơn Hàng',
   'menu.sales.customers':'Khách Hàng',
+  'menu.editor': 'Graphic Editor',
+  'menu.editor.flow': 'Flow Editor',
+  'menu.editor.mind': 'Mind Editor',
+  'menu.editor.koni': 'Koni Editor',
 };
