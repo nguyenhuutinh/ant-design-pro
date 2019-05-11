@@ -18,7 +18,7 @@ const plugins = [
         hmr: true,
       },
       locale: {
-        enable: true, // default false
+        enable: false, // default false
         default: 'en-US', // default zh-CN
         baseNavigator: true, // default true, when it is true, will use `navigator.language` overwrite default
       },

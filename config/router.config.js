@@ -119,7 +119,7 @@ export default [
           {
             path: '/import/products',
             name: 'products',
-            component: './Import/Product/TableList',
+            component: './Import/Product/ImportProduct',
           },
           {
             path: '/import/orders',
@@ -129,7 +129,7 @@ export default [
               {
                 path: '/import/orders',
                 name: 'orders',
-                component: './Import/Orders/TableList',
+                component: './Import/Orders/OrderList',
                 hideInMenu: true,
               },
               {

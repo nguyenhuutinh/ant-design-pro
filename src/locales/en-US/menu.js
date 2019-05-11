@@ -42,7 +42,7 @@ export default {
   'menu.sales.product': 'Sản Phẩm',
   'menu.sales.orders': 'Đơn Hàng',
   'menu.sales.orderdetail': 'Chi Tiết Đơn Hàng',
-  'menu.import': 'Quản Lý Bán Hàng',
+  'menu.import': 'Quản Lý Nhập Hàng',
   'menu.import.products': 'Sản Phẩm',
   'menu.import.orders': 'Đơn Hàng',
   'menu.sales.orders.orderdetail': 'Chi Tiết Đơn Hàng',

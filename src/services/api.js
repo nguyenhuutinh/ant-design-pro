@@ -91,21 +91,19 @@ export async function queryImportProduct(params) {
 }
 
 export async function removeImportProduct(params) {
-  return request('/api/v1/import/product', {
-    method: 'POST',
+  return request('/api/v1/import/products', {
+    method: 'DELETE',
     data: {
-      ...params,
-      method: 'delete',
+      ...params
     },
   });
 }
 
 export async function addImportProduct(params) {
-  return request('/api/v1/import/product', {
+  return request('/api/v1/import/products', {
     method: 'POST',
     data: {
       ...params,
-      method: 'post',
     },
   });
 }
@@ -198,10 +196,9 @@ export async function queryImportOrders(params) {
 
 export async function removeImportOrder(params) {
   return request('/api/v1/import/orders', {
-    method: 'POST',
+    method: 'DELETE',
     data: {
       ...params,
-      method: 'delete',
     },
   });
 }
@@ -211,17 +208,26 @@ export async function addImportOrder(params) {
     method: 'POST',
     data: {
       ...params,
-      method: 'post',
     },
   });
 }
 
-export async function updateImportOrder(params = {}) {
+
+export async function updateImportOrderProducts(params = {}) {
   return request(`/api/v1/import/orders?${stringify(params.query)}`, {
     method: 'POST',
     data: {
       ...params.body,
       method: 'update',
+    },
+  });
+}
+
+export async function updateImportOrder(params = {}) {
+  return request(`/api/v1/import/orders/:id/products}`, {
+    method: 'POST',
+    data: {
+      ...params.body,
     },
   });
 }

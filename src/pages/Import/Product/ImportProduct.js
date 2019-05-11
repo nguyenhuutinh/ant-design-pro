@@ -25,7 +25,7 @@ import {
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-import styles from './TableList.less';
+import styles from './ImportProduct.less';
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -51,15 +51,35 @@ const CreateForm = Form.create()(props => {
   return (
     <Modal
       destroyOnClose
-      title="新建规则"
+      title="Tạo Sản Phẩm mới"
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="描述">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
-        })(<Input placeholder="请输入" />)}
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 15 }} label="Mã Sản Phẩm">
+        {form.getFieldDecorator('prd_code', {
+          rules: [{ required: true, message: 'Mã Sản Phẩm bắt buộc', min: 3 }],
+          initialValue: "kg1"
+        })(<Input placeholder="" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 15 }} label="Tên Sản Phẩm">
+        {form.getFieldDecorator('name', {
+          rules: [{ required: true, message: 'Tên Sản Phẩm bắt buộc', min: 3 }],
+          initialValue: "111"
+        })(<Input placeholder="" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 15 }} label="Đơn Vị Tính">
+        {form.getFieldDecorator('dvt', {
+          rules: [{ required: true }],
+          initialValue: "kg"
+        })(<Select style={{ width: 120 }}>
+        <Select.Option value="kg">Kg</Select.Option>
+      </Select>)}
+      </FormItem>
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 15 }} label="Ghi Chú">
+        {form.getFieldDecorator('note', {
+          rules: [{ required: false, message: 'Ghi Chú', min: 5 }],
+        })(<TextArea placeholder="" />)}
       </FormItem>
     </Modal>
   );
@@ -274,12 +294,12 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ importOrder, loading }) => ({
-  order: importOrder,
-  loading: loading.models.importOrder,
+@connect(({ importProduct, loading }) => ({
+  product: importProduct,
+  loading: loading.models.importProduct,
 }))
 @Form.create()
-class Orders extends PureComponent {
+class ImportProduct extends PureComponent {
   state = {
     modalVisible: false,
     updateModalVisible: false,
@@ -291,28 +311,22 @@ class Orders extends PureComponent {
 
   columns = [
     {
-      title: 'Order Code',
-      dataIndex: 'order_code',
-      render: (text, order) => <a onClick={() => this.previewItem(order._id)}>{text}</a>,
+      title: 'Product Code',
+      dataIndex: 'prd_code',
     },
     {
-      title: 'Customer Name',
-      dataIndex: 'customer_id.email',
+      title: 'Product Name',
+      dataIndex: 'name',
       
+      render: text => <a onClick={() => this.previewItem(text)}>{text}</a>,
     },
 
     {
-      title: 'Address',
-      dataIndex: 'delivery_address',
-      sorter: true,
-      needTotal: true,
-    },
-    {
-      title: 'Time',
-      dataIndex: 'delivery_time',
+      title: 'DVT',
+      dataIndex: 'dvt',
       sorter: true,
 
-      needTotal: true,
+      
     },
     {
       title: 'Note',
@@ -330,7 +344,7 @@ class Orders extends PureComponent {
         <Fragment>
           <a onClick={() => this.handleUpdateModalVisible(true, record)}>Edit</a>
           <Divider type="vertical" />
-          <a href="">Delete</a>
+          <a onClick={this.handleMenuClick.bind(this, record)}>Delete</a>
         </Fragment>
       ),
     },
@@ -339,9 +353,10 @@ class Orders extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'importOrder/fetch',
+      type: 'importProduct/fetch',
     });
   }
+
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -364,13 +379,13 @@ class Orders extends PureComponent {
     }
 
     dispatch({
-      type: 'importOrder/fetch',
+      type: 'importProduct/fetch',
       payload: params,
     });
   };
 
   previewItem = id => {
-    router.push(`orders/${id}`);
+    router.push(`/profile/basic/${id}`);
   };
 
   handleFormReset = () => {
@@ -380,7 +395,7 @@ class Orders extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'importOrder/fetch',
+      type: 'importProduct/fetch',
       payload: {},
     });
   };
@@ -393,27 +408,40 @@ class Orders extends PureComponent {
   };
 
   handleMenuClick = e => {
+    console.log("", e)
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
-
-    if (selectedRows.length === 0) return;
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'importOrder/remove',
-          payload: {
-            key: selectedRows.map(row => row.key),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
+    dispatch({
+      type: 'importProduct/remove',
+      payload: {
+        id: e & e.id ? e.id : selectedRows.map(row => row.id),
+      },
+      callback: () => {
+        message.success("Xoá Sản Phẩm Thành Công");
+        this.componentDidMount()
+        this.setState({
+          selectedRows: [],
         });
-        break;
-      default:
-        break;
-    }
+      },
+    });
+    // if (selectedRows.length === 0) return;
+    // switch (e.key) {
+    //   case 'remove':
+    //     dispatch({
+    //       type: 'importProduct/remove',
+    //       payload: {
+    //         key: selectedRows.map(row => row.key),
+    //       },
+    //       callback: () => {
+    //         this.setState({
+    //           selectedRows: [],
+    //         });
+    //       },
+    //     });
+    //     break;
+    //   default:
+    //     break;
+    // }
   };
 
   handleSelectRows = rows => {
@@ -440,7 +468,7 @@ class Orders extends PureComponent {
       });
 
       dispatch({
-        type: 'importOrder/fetch',
+        type: 'importProduct/fetch',
         payload: values,
       });
     });
@@ -460,23 +488,29 @@ class Orders extends PureComponent {
   };
 
   handleAdd = fields => {
+    // console.log(fields)
     const { dispatch } = this.props;
     dispatch({
-      type: 'importOrder/add',
+      type: 'importProduct/add',
       payload: {
-        desc: fields.desc,
+        ...fields
       },
-    });
-
-    message.success('添加成功');
-    this.handleModalVisible();
+      callback: (res)=>{
+        if(res){
+          this.handleModalVisible()
+          message.success("Thêm Sản Phẩm Thành Công");
+          this.componentDidMount()
+        }
+      },
+    });    
+    
   };
 
   handleUpdate = fields => {
     const { dispatch } = this.props;
     const { formValues } = this.state;
     dispatch({
-      type: 'importOrder/update',
+      type: 'importProduct/update',
       payload: {
         query: formValues,
         body: {
@@ -506,7 +540,7 @@ class Orders extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="Status">
               {getFieldDecorator('status')(
-                <Select placeholder="hello" style={{ width: '100%' }}>
+                <Select placeholder="" style={{ width: '100%' }}>
                   <Option value="0">0</Option>
                   <Option value="1">1</Option>
                 </Select>
@@ -612,19 +646,18 @@ class Orders extends PureComponent {
 
   render() {
     const {
-      order: { data },
+      product: { data },
       loading,
     } = this.props;
-    if (loading || data == undefined || data.length == 0) {
+    console.log(data)
+    if (data == undefined || data.length == 0) {
       return [];
     }
-    let orderData = data.data || []
     // console.log('ok', this.props);
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
+       
       </Menu>
     );
 
@@ -643,23 +676,24 @@ class Orders extends PureComponent {
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                New Product
+                Tạo Sản Phẩm Mới
               </Button>
               {selectedRows.length > 0 && (
                 <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
+                  <Button>Select All</Button>
+                  {/* <Dropdown overlay={menu}>
                     <Button>
-                      更多操作 <Icon type="down" />
+                      Actions <Icon type="down" />
                     </Button>
-                  </Dropdown>
+                  </Dropdown> */}
+                  <Button onClick={this.handleMenuClick}>Delete</Button>
                 </span>
               )}
             </div>
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={orderData}
+              data={data.data}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
@@ -679,4 +713,4 @@ class Orders extends PureComponent {
   }
 }
 
-export default Orders;
+export default ImportProduct;

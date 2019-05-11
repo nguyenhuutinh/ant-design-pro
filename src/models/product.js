@@ -8,30 +8,32 @@ export default {
     //   list: [],
     //   pagination: {},
     // },
+    data: undefined
   },
 
   effects: {
     *fetch({ payload }, { call, put }) {
       const response = yield call(queryImportProduct, payload);
       yield put({
-        type: 'save',
+        type: 'load',
         payload: response,
       });
     },
     *add({ payload, callback }, { call, put }) {
+      // console.log(addImportProduct)
       const response = yield call(addImportProduct, payload);
       yield put({
-        type: 'save',
+        type: 'addProduct',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
     },
     *remove({ payload, callback }, { call, put }) {
       const response = yield call(removeImportProduct, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+      // yield put({
+      //   type: 'save',
+      //   payload: response,
+      // });
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
@@ -42,13 +44,31 @@ export default {
       });
       if (callback) callback();
     },
+    
+    
   },
 
   reducers: {
+    load(state, action) {
+      return {
+        ...state,
+        data: action.payload,
+        isAdded: false
+      };
+    },
+    addProduct(state, action) {
+      return {
+        ...state,
+        // data: action.payload,
+        isAdded: true
+        
+      };
+    },
     save(state, action) {
       return {
         ...state,
         data: action.payload,
+        isAdded: true
       };
     },
   },

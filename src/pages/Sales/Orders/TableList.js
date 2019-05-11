@@ -550,7 +550,7 @@ class Orders extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="Status">
               {getFieldDecorator('status')(
-                <Select placeholder="hello" style={{ width: '100%' }}>
+                <Select placeholder="" style={{ width: '100%' }}>
                   <Option value="0">0</Option>
                   <Option value="1">1</Option>
                 </Select>

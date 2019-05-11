@@ -1,4 +1,4 @@
-import { queryImportOrders, queryImportOrderDetail, addImportOrder, removeImportOrder, updateImportOrder } from '@/services/api';
+import { queryImportOrders, queryImportOrderDetail, addImportOrder, removeImportOrder, updateImportOrder , updateImportOrderProducts} from '@/services/api';
 
 export default {
   namespace: 'importOrder',
@@ -20,18 +20,18 @@ export default {
     },
     *add({ payload, callback }, { call, put }) {
       const response = yield call(addImportOrder, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+      // yield put({
+      //   type: 'save',
+      //   payload: response,
+      // });
       if (callback) callback();
     },
     *remove({ payload, callback }, { call, put }) {
       const response = yield call(removeImportOrder, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+      // yield put({
+      //   type: 'save',
+      //   payload: response,
+      // });
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
@@ -48,6 +48,14 @@ export default {
         type: 'save',
         payload: response,
       });
+    },
+    *updateProducts({ payload, callback }, { call, put }) {
+      const response = yield call(updateImportOrderProducts, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback();
     },
   },
 

@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Badge, Table, Divider } from 'antd';
+import { Card, Badge, Table, Divider, Form , Modal, Button} from 'antd';
 import DescriptionList from '@/components/DescriptionList';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './OrderDetail.less';
 import moment from 'moment';
-
+import StandardTable from '@/components/StandardTable';
 const { Description } = DescriptionList;
 
 
-@connect(({ importOrder, loading }) => ({
+@connect(({ importOrder,importProduct, loading }) => ({
   order: importOrder,
   loading: loading.global,
+  products: importProduct,
 }))
 class OrderDetail extends Component {
+  state = {}
   componentDidMount() {
     const { dispatch, match } = this.props;
     const { params } = match;
@@ -22,12 +24,73 @@ class OrderDetail extends Component {
       type: 'importOrder/detail',
       payload:params.id ,
     });
+
+    dispatch({
+      type: 'importProduct/fetch',
+      payload: {},
+    });
+  }
+
+  handleModalVisible = flag => {
+    this.setState({
+      modalVisible: !!flag,
+    });
+  };
+
+  handleSelectRows = rows => {
+    this.setState({
+      selectedRows: rows,
+    });
+  };
+
+  handleStandardTableChange = (pagination, filtersArg, sorter) => {
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
+
+    const filters = Object.keys(filtersArg).reduce((obj, key) => {
+      const newObj = { ...obj };
+      newObj[key] = getValue(filtersArg[key]);
+      return newObj;
+    }, {});
+
+    const params = {
+      currentPage: pagination.current,
+      pageSize: pagination.pageSize,
+      ...formValues,
+      ...filters,
+    };
+    if (sorter.field) {
+      params.sorter = `${sorter.field}_${sorter.order}`;
+    }
+
+    dispatch({
+      type: 'importProduct/fetch',
+      payload: params,
+    });
+  };
+  onAddProducts = (e) =>{
+    const { dispatch } = this.props;
+    const { selectedRows } = this.state;
+    dispatch({
+      type: 'importOrder/updateProducts',
+      payload: {
+        ...fields
+      },
+      callback: (res)=>{
+        if(res){
+          this.handleModalVisible()
+          message.success("Thêm Sản Phẩm Thành Công");
+          this.componentDidMount()
+        }
+      },
+    });    
   }
 
   render() {
-    const { order = {}, loading } = this.props;
+    const { order = {}, loading, products ={} } = this.props;
+    const {modalVisible, selectedRows=[]} = this.state;
     // console.log(loading)
-    const { productIDs = [], customer_id = {} } = order.data || {};
+    const { productIDs = [], customer = {} } = order.data || {};
     const orderDetail = order.data || {}
     // let goodsData = [];
     // if (basicGoods.length) {
@@ -118,27 +181,37 @@ class OrderDetail extends Component {
         },
       },
     ];
+    const parentMethods = {
+      handleAdd: this.handleAdd,
+      handleSelectRows: this.handleSelectRows,
+      handleModalVisible: this.handleModalVisible,
+      handleStandardTableChange: this.handleStandardTableChange
+    };
     return (
+      <div>
+        
       <PageHeaderWrapper title="CHI TIẾT ĐƠN HÀNG" loading={loading}>
         <Card bordered={false}>
           <DescriptionList size="large" title="Thông tin Khách Hàng" style={{ marginBottom: 32 }}>
-            <Description term="Mã Khách Hàng"><b>{customer_id._id}</b></Description>
-            <Description term="Tên Khách Hàng"><b>{customer_id.name}</b></Description>
-            <Description term="Email"><b>{customer_id.email}</b></Description>
+            <Description term="Mã Khách Hàng"><b>{customer._id}</b></Description>
+            <Description term="Tên Khách Hàng"><b>{customer.name}</b></Description>
+            <Description term="Email"><b>{customer.email}</b></Description>
             
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
           <DescriptionList size="large" title="Thông Tin Đơn Hàng" style={{ marginBottom: 32 }}>
+            <Description term="NGƯỜI ĐẶT HÀNG"><b>{orderDetail.order_name}</b></Description>
             <Description term="ĐỊA CHỈ GIAO HÀNG"><b>{orderDetail.delivery_address}</b></Description>
             <Description term="TIME GIAO HÀNG"><b>{moment(orderDetail.delivery_time).format('YYYY-MM-DD HH:mm:ss')}</b></Description>
             <Description term="SALES FORCE">{orderDetail.sale_force}</Description>
-            <Description term="HOTLINE DELI">{orderDetail.hotline}</Description>
-            <Description term="EMAIL">{orderDetail.receive_email}</Description>
-            <Description term="CC QUA E-MAIL">{orderDetail.cc_emails}</Description>
+            <Description term="HOTLINE DELI">{orderDetail.hotline_deli}</Description>
+            <Description term="EMAIL">{orderDetail.email}</Description>
+            <Description term="CC QUA E-MAIL">{orderDetail.cc_email}</Description>
             <Description term="LƯU Ý">{orderDetail.note}</Description>
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
           <div className={styles.title}>Thông Tin Sản Phẩm</div>
+          <Button onClick={this.handleModalVisible.bind(this,true)}>Add Product</Button>
           <Table
             style={{ marginBottom: 24 }}
             pagination={false}
@@ -157,6 +230,25 @@ class OrderDetail extends Component {
           /> */}
         </Card>
       </PageHeaderWrapper>
+      <Modal
+          destroyOnClose
+          title="Tạo Sản Phẩm mới"
+          visible={modalVisible}
+          onOk={this.onAddProducts}
+          width={'90%'}
+          onCancel={() => this.handleModalVisible()}
+        >
+       <StandardTable
+              selectedRows={selectedRows}
+              loading={loading}
+              data={products.data}
+              columns={productColumns}
+              onSelectRow={this.handleSelectRows}
+              onChange={this.handleStandardTableChange}
+            />
+    </Modal>
+  );
+      </div>
     );
   }
 }

@@ -25,8 +25,8 @@ import {
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-import styles from './TableList.less';
-
+import styles from './OrderList.less';
+const debug = console.log;
 const FormItem = Form.Item;
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -40,7 +40,7 @@ const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['关闭', '运行中', '已上线', '异常'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, customer=[] } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -51,15 +51,128 @@ const CreateForm = Form.create()(props => {
   return (
     <Modal
       destroyOnClose
-      title="新建规则"
+      title="Tạo Đơn hàng mới"
       visible={modalVisible}
       onOk={okHandle}
+      width={640}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="描述">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
-        })(<Input placeholder="请输入" />)}
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Thông Tin Khách Hàng">
+          {form.getFieldDecorator('customer_id', {
+            rules: [{ required: true, message: 'Thông tin khách hàng'}],
+          })(<Select style={{ width: 220 }}>
+          {customer.data && customer.data.map((data)=>{
+            return <Option value={data.id}>{data.name + " - "+ data.phone}</Option>
+          })}
+          
+         
+        </Select>)}
+      </FormItem>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Mã Đơn Hàng">
+        {form.getFieldDecorator('order_code', {
+          rules: [{ required: true, message: 'Mã Đơn Hàng ' }],
+        })(<Input placeholder="" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Người Đặt Hàng">
+        {form.getFieldDecorator('order_name', {
+          rules: [{ required: true, message: 'Người Đặt Hàng' }],
+          initialValue:"MS.HỒNG - 0888651775"
+        })(<Select
+          showSearch
+          style={{ width: 400 }}
+          placeholder="Người Đặt Hàng"
+          optionFilterProp="children"
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          <Option value="MS.HỒNG - 0888651775">MS.HỒNG - 0888651775</Option>
+        </Select>)}
+      </FormItem>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Địa chỉ giao hàng">
+        {form.getFieldDecorator('delivery_address', {
+          rules: [{ required: true, message: 'địa chỉ giao hàng' }],
+          initialValue:"416A1 Hai Bà Trưng, Tân Định, Quận 1, HCM"
+        })( <Select
+          showSearch
+          style={{ width: 400 }}
+          placeholder="Chọn Địa chỉ"
+          optionFilterProp="children"
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          <Option value="416A1 Hai Bà Trưng, Tân Định, Quận 1, HCM">416A1 Hai Bà Trưng, Tân Định, Quận 1, HCM</Option>
+        </Select>)}
+      </FormItem>
+
+      
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Thời gian Giao Hàng">
+        {form.getFieldDecorator('delivery_time', {
+          rules: [{ required: true, message: 'thời gian giao hàng ' }],
+        })(<DatePicker
+          showTime
+          format="MM-DD HH:mm"
+        />)}
+      </FormItem>
+
+
+
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Sale Force">
+        {form.getFieldDecorator('sale_force', {
+          initialValue:"HONG NHANH - 090 705 6593"
+        })( <Select
+          showSearch
+          style={{ width: 400 }}
+          placeholder="Chọn Địa chỉ"
+          optionFilterProp="children"
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          <Option value="HONG NHANH - 090 705 6593">HONG NHANH - 090 705 6593</Option>
+        </Select>)}
+      </FormItem>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Hotline Deli">
+        {form.getFieldDecorator('hotline_deli', {
+          initialValue:"0932.032.719"
+        })( <Select
+          showSearch
+          style={{ width: 400 }}
+          placeholder="Chọn Địa chỉ"
+          optionFilterProp="children"
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          <Option value="0932.032.719">0932.032.719</Option>
+        </Select>)}
+      </FormItem>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Email">
+        {form.getFieldDecorator('email', {
+          initialValue:"mccvn.delivery.st10@mmvietnam.com"
+        })( <Select
+          showSearch
+          style={{ width: 400 }}
+          placeholder="Chọn Địa chỉ"
+          optionFilterProp="children"
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          <Option value="mccvn.delivery.st10@mmvietnam.com">mccvn.delivery.st10@mmvietnam.com</Option>
+        </Select>)}
+      </FormItem>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="CC Email">
+        {form.getFieldDecorator('cc_email', {
+          initialValue:"mccvn.kas.st10@mmvietnam.com"
+        })( <Select
+          mode="multiple"
+          size="large"
+          placeholder="Please select"
+          defaultValue={['a10', 'c12']}
+          
+          style={{ width: '100%' }}
+        >
+          <Option value="mccvn.kas.st10@mmvietnam.com">mccvn.kas.st10@mmvietnam.com</Option>
+          <Option value="nhanhnguyen158@gmail.com">nhanhnguyen158@gmail.com</Option>
+          	
+        </Select>)}
+      </FormItem>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Ghi Chú">
+        {form.getFieldDecorator('note', {
+          rules: [{ required: false, message: 'note ' }],
+        })(<TextArea cols={4} placeholder="" />)}
       </FormItem>
     </Modal>
   );
@@ -274,12 +387,13 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ importProduct, loading }) => ({
-  product: importProduct,
-  loading: loading.models.importProduct,
+@connect(({ importOrder,customer, loading }) => ({
+  order: importOrder,
+  customer: customer,
+  loading: loading.models.importOrder,
 }))
 @Form.create()
-class TableList extends PureComponent {
+class Orders extends PureComponent {
   state = {
     modalVisible: false,
     updateModalVisible: false,
@@ -291,28 +405,36 @@ class TableList extends PureComponent {
 
   columns = [
     {
-      title: 'Product Code',
-      dataIndex: 'prd_code',
+      title: 'Mã Đơn hàng',
+      dataIndex: 'order_code',
+      render: (text, order) => <a onClick={() => this.previewItem(order.id)}>{text}</a>,
     },
     {
-      title: 'Product Name',
-      dataIndex: 'name',
-      render: text => <a onClick={() => this.previewItem(text)}>{text}</a>,
+      title: 'Tên Khách Hàng',
+      dataIndex: 'customer',
+      
     },
 
     {
-      title: 'DVT',
-      dataIndex: 'dvt',
+      title: 'Địa chỉ',
+      dataIndex: 'delivery_address',
       sorter: true,
-
-      needTotal: true,
+      // needTotal: true,
     },
     {
-      title: 'Note',
+      title: 'Thời gian giao hàng',
+      dataIndex: 'delivery_time',
+      sorter: true,
+      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+
+      // needTotal: true,
+    },
+    {
+      title: 'Ghi Chú',
       dataIndex: 'note',
     },
     {
-      title: 'Updated At',
+      title: 'Cập Nhật lúc',
       dataIndex: 'updatedAt',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
@@ -323,7 +445,7 @@ class TableList extends PureComponent {
         <Fragment>
           <a onClick={() => this.handleUpdateModalVisible(true, record)}>Edit</a>
           <Divider type="vertical" />
-          <a href="">Delete</a>
+          <a onClick={this.handleMenuClick.bind(this,record)}>Delete</a>
         </Fragment>
       ),
     },
@@ -332,7 +454,10 @@ class TableList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'importProduct/fetch',
+      type: 'importOrder/fetch',
+    });
+    dispatch({
+      type: 'customer/fetch',
     });
   }
 
@@ -357,13 +482,13 @@ class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'importProduct/fetch',
+      type: 'importOrder/fetch',
       payload: params,
     });
   };
 
   previewItem = id => {
-    router.push(`/profile/basic/${id}`);
+    router.push(`orders/${id}`);
   };
 
   handleFormReset = () => {
@@ -373,7 +498,7 @@ class TableList extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'importProduct/fetch',
+      type: 'importOrder/fetch',
       payload: {},
     });
   };
@@ -388,25 +513,38 @@ class TableList extends PureComponent {
   handleMenuClick = e => {
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
-
-    if (selectedRows.length === 0) return;
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'importProduct/remove',
-          payload: {
-            key: selectedRows.map(row => row.key),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
+    console.log(selectedRows.map(row => row.id))
+    dispatch({
+      type: 'importOrder/remove',
+      payload: {
+        id: e & e.id ? e.id : selectedRows.map(row => row.id),
+      },
+      callback: () => {
+        message.success("Xoá Đơn Hàng Thành Công");
+        this.componentDidMount()
+        this.setState({
+          selectedRows: [],
         });
-        break;
-      default:
-        break;
-    }
+      },
+    });
+    // if (selectedRows.length === 0) return;
+    // switch (e.key) {
+    //   case 'remove':
+    //     dispatch({
+    //       type: 'importOrder/remove',
+    //       payload: {
+    //         key: selectedRows.map(row => row.key),
+    //       },
+    //       callback: () => {
+    //         this.setState({
+    //           selectedRows: [],
+    //         });
+    //       },
+    //     });
+    //     break;
+    //   default:
+    //     break;
+    // }
   };
 
   handleSelectRows = rows => {
@@ -433,7 +571,7 @@ class TableList extends PureComponent {
       });
 
       dispatch({
-        type: 'importProduct/fetch',
+        type: 'importOrder/fetch',
         payload: values,
       });
     });
@@ -455,13 +593,18 @@ class TableList extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'importProduct/add',
+      type: 'importOrder/add',
       payload: {
-        desc: fields.desc,
+        ...fields,
       },
+      callback : ()=>{
+        message.success('Thêm Đơn Hàng Thành Công');
+        this.componentDidMount();
+        
+      }
     });
 
-    message.success('添加成功');
+    
     this.handleModalVisible();
   };
 
@@ -469,7 +612,7 @@ class TableList extends PureComponent {
     const { dispatch } = this.props;
     const { formValues } = this.state;
     dispatch({
-      type: 'importProduct/update',
+      type: 'importOrder/update',
       payload: {
         query: formValues,
         body: {
@@ -499,7 +642,7 @@ class TableList extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="Status">
               {getFieldDecorator('status')(
-                <Select placeholder="hello" style={{ width: '100%' }}>
+                <Select placeholder="" style={{ width: '100%' }}>
                   <Option value="0">0</Option>
                   <Option value="1">1</Option>
                 </Select>
@@ -605,12 +748,16 @@ class TableList extends PureComponent {
 
   render() {
     const {
-      product: { data },
+      order: { data },
       loading,
+      
     } = this.props;
+    const {customer = {}} = this.props
     if (loading || data == undefined || data.length == 0) {
       return [];
     }
+    
+    let orderData = data.data || []
     // console.log('ok', this.props);
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     const menu = (
@@ -635,30 +782,31 @@ class TableList extends PureComponent {
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                New Product
+                Tạo Đơn Hàng Mới
               </Button>
               {selectedRows.length > 0 && (
                 <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
+                  <Button>Select All</Button>
+                  <Button onClick={this.handleMenuClick}>Delete</Button>
+                  {/* <Dropdown overlay={menu}>
                     <Button>
                       更多操作 <Icon type="down" />
                     </Button>
-                  </Dropdown>
+                  </Dropdown> */}
                 </span>
               )}
             </div>
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={data.data}
+              data={orderData}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
+        <CreateForm {...parentMethods} modalVisible={modalVisible} customer={customer.data} />
         {stepFormValues && Object.keys(stepFormValues).length ? (
           <UpdateForm
             {...updateMethods}
@@ -671,4 +819,4 @@ class TableList extends PureComponent {
   }
 }
 
-export default TableList;
+export default Orders;
