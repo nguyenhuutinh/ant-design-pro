@@ -71,10 +71,12 @@ class OrderDetail extends Component {
   onAddProducts = (e) =>{
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
+    console.log(this.props.order)
     dispatch({
       type: 'importOrder/updateProducts',
       payload: {
-        ...fields
+        id: this.props.order.data.id,
+        productIDs: e & e.id ? e.id : selectedRows.map(row => row.id),
       },
       callback: (res)=>{
         if(res){
@@ -88,8 +90,9 @@ class OrderDetail extends Component {
 
   render() {
     const { order = {}, loading, products ={} } = this.props;
+    const {data: productList = []} = products.data || {}
     const {modalVisible, selectedRows=[]} = this.state;
-    // console.log(loading)
+    // console.log("productList",productList)
     const { productIDs = [], customer = {} } = order.data || {};
     const orderDetail = order.data || {}
     // let goodsData = [];
@@ -241,7 +244,7 @@ class OrderDetail extends Component {
        <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={products.data}
+              data={productList}
               columns={productColumns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

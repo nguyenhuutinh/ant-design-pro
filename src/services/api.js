@@ -214,20 +214,22 @@ export async function addImportOrder(params) {
 
 
 export async function updateImportOrderProducts(params = {}) {
+  return request(`/api/v1/import/orders/${params.id}/products`, {
+    method: 'PUT',
+    data: {
+      ...params,
+    },
+    
+  });
+}
+
+export async function updateImportOrder(params = {}) {
+  
   return request(`/api/v1/import/orders?${stringify(params.query)}`, {
     method: 'POST',
     data: {
       ...params.body,
       method: 'update',
-    },
-  });
-}
-
-export async function updateImportOrder(params = {}) {
-  return request(`/api/v1/import/orders/:id/products}`, {
-    method: 'POST',
-    data: {
-      ...params.body,
     },
   });
 }
