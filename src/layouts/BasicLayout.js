@@ -112,8 +112,10 @@ class BasicLayout extends React.Component {
       breadcrumbNameMap,
       fixedHeader,
       login,
+      loading
     } = this.props;
     const isUserAuthorized = login.status != undefined;
+    // console.log("login", loading, login)
     // Layout Rendering
     const getLayout = () => {
       if (pathname === '/') {
@@ -126,7 +128,7 @@ class BasicLayout extends React.Component {
     };
 
     const isLoginLayout = getLayout() === 'login';
-    if (!isLoginLayout && isUserAuthorized == false) {
+    if (!isLoginLayout && isUserAuthorized == false && !loading.global) {
       return <Redirect to="/user/login" />;
     }
     const isTop = PropsLayout === 'topmenu';
@@ -180,13 +182,14 @@ class BasicLayout extends React.Component {
   }
 }
 
-export default connect(({ login, global, setting, menu: menuModel }) => ({
+export default connect(({ login, loading, global, setting, menu: menuModel }) => ({
   collapsed: global.collapsed,
   layout: setting.layout,
   menuData: menuModel.menuData,
   breadcrumbNameMap: menuModel.breadcrumbNameMap,
   ...setting,
   login,
+  loading
 }))(props => (
   <Media query="(max-width: 599px)">
     {isMobile => <BasicLayout {...props} isMobile={isMobile} />}

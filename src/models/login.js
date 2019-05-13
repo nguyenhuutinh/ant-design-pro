@@ -86,7 +86,7 @@ export default {
       }
       var payload = token.getUID();
       const response = yield call(queryCurrent, payload);
-
+      // console.log("fetchCurrentUser",response)
       if (response) {
         response.status = true;
         reloadAuthorized();

@@ -21,11 +21,14 @@ import {
   Divider,
   Steps,
   Radio,
+  Upload
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './OrderList.less';
+const Dragger = Upload.Dragger;
+
 const debug = console.log;
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -40,7 +43,7 @@ const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['关闭', '运行中', '已上线', '异常'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible, customer=[] } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, customer = [] } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -58,15 +61,16 @@ const CreateForm = Form.create()(props => {
       onCancel={() => handleModalVisible()}
     >
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Thông Tin Khách Hàng">
-          {form.getFieldDecorator('customer_id', {
-            rules: [{ required: true, message: 'Thông tin khách hàng'}],
-          })(<Select style={{ width: 220 }}>
-          {customer.data && customer.data.map((data)=>{
-            return <Option value={data.id}>{data.name + " - "+ data.phone}</Option>
-          })}
-          
-         
-        </Select>)}
+        {form.getFieldDecorator('customer_id', {
+          rules: [{ required: true, message: 'Thông tin khách hàng' }],
+        })(
+          <Select style={{ width: 220 }}>
+            {customer.data &&
+              customer.data.map((data, key) => {
+                return <Option key={key} value={data.id}>{data.name + ' - ' + data.phone}</Option>;
+              })}
+          </Select>
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Mã Đơn Hàng">
         {form.getFieldDecorator('order_code', {
@@ -76,98 +80,115 @@ const CreateForm = Form.create()(props => {
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Người Đặt Hàng">
         {form.getFieldDecorator('order_name', {
           rules: [{ required: true, message: 'Người Đặt Hàng' }],
-          initialValue:"MS.HỒNG - 0888651775"
-        })(<Select
-          showSearch
-          style={{ width: 400 }}
-          placeholder="Người Đặt Hàng"
-          optionFilterProp="children"
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          <Option value="MS.HỒNG - 0888651775">MS.HỒNG - 0888651775</Option>
-        </Select>)}
+          initialValue: 'MS.HỒNG - 0888651775',
+        })(
+          <Select
+            showSearch
+            style={{ width: 400 }}
+            placeholder="Người Đặt Hàng"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            <Option value="MS.HỒNG - 0888651775">MS.HỒNG - 0888651775</Option>
+          </Select>
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Địa chỉ giao hàng">
         {form.getFieldDecorator('delivery_address', {
           rules: [{ required: true, message: 'địa chỉ giao hàng' }],
-          initialValue:"416A1 Hai Bà Trưng, Tân Định, Quận 1, HCM"
-        })( <Select
-          showSearch
-          style={{ width: 400 }}
-          placeholder="Chọn Địa chỉ"
-          optionFilterProp="children"
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          <Option value="416A1 Hai Bà Trưng, Tân Định, Quận 1, HCM">416A1 Hai Bà Trưng, Tân Định, Quận 1, HCM</Option>
-        </Select>)}
+          initialValue: '416A1 Hai Bà Trưng, Tân Định, Quận 1, HCM',
+        })(
+          <Select
+            showSearch
+            style={{ width: 400 }}
+            placeholder="Chọn Địa chỉ"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            <Option value="416A1 Hai Bà Trưng, Tân Định, Quận 1, HCM">
+              416A1 Hai Bà Trưng, Tân Định, Quận 1, HCM
+            </Option>
+          </Select>
+        )}
       </FormItem>
 
-      
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Thời gian Giao Hàng">
         {form.getFieldDecorator('delivery_time', {
           rules: [{ required: true, message: 'thời gian giao hàng ' }],
-        })(<DatePicker
-          showTime
-          format="MM-DD HH:mm"
-        />)}
+        })(<DatePicker showTime format="MM-DD HH:mm" />)}
       </FormItem>
-
-
 
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Sale Force">
         {form.getFieldDecorator('sale_force', {
-          initialValue:"HONG NHANH - 090 705 6593"
-        })( <Select
-          showSearch
-          style={{ width: 400 }}
-          placeholder="Chọn Địa chỉ"
-          optionFilterProp="children"
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          <Option value="HONG NHANH - 090 705 6593">HONG NHANH - 090 705 6593</Option>
-        </Select>)}
+          initialValue: 'HONG NHANH - 090 705 6593',
+        })(
+          <Select
+            showSearch
+            style={{ width: 400 }}
+            placeholder="Chọn Địa chỉ"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            <Option value="HONG NHANH - 090 705 6593">HONG NHANH - 090 705 6593</Option>
+          </Select>
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Hotline Deli">
         {form.getFieldDecorator('hotline_deli', {
-          initialValue:"0932.032.719"
-        })( <Select
-          showSearch
-          style={{ width: 400 }}
-          placeholder="Chọn Địa chỉ"
-          optionFilterProp="children"
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          <Option value="0932.032.719">0932.032.719</Option>
-        </Select>)}
+          initialValue: '0932.032.719',
+        })(
+          <Select
+            showSearch
+            style={{ width: 400 }}
+            placeholder="Chọn Địa chỉ"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            <Option value="0932.032.719">0932.032.719</Option>
+          </Select>
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Email">
         {form.getFieldDecorator('email', {
-          initialValue:"mccvn.delivery.st10@mmvietnam.com"
-        })( <Select
-          showSearch
-          style={{ width: 400 }}
-          placeholder="Chọn Địa chỉ"
-          optionFilterProp="children"
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          <Option value="mccvn.delivery.st10@mmvietnam.com">mccvn.delivery.st10@mmvietnam.com</Option>
-        </Select>)}
+          initialValue: 'mccvn.delivery.st10@mmvietnam.com',
+        })(
+          <Select
+            showSearch
+            style={{ width: 400 }}
+            placeholder="Chọn Địa chỉ"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            <Option value="mccvn.delivery.st10@mmvietnam.com">
+              mccvn.delivery.st10@mmvietnam.com
+            </Option>
+          </Select>
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="CC Email">
         {form.getFieldDecorator('cc_email', {
-          initialValue:"mccvn.kas.st10@mmvietnam.com"
-        })( <Select
-          mode="multiple"
-          size="large"
-          placeholder="Please select"
-          defaultValue={['a10', 'c12']}
-          
-          style={{ width: '100%' }}
-        >
-          <Option value="mccvn.kas.st10@mmvietnam.com">mccvn.kas.st10@mmvietnam.com</Option>
-          <Option value="nhanhnguyen158@gmail.com">nhanhnguyen158@gmail.com</Option>
-          	
-        </Select>)}
+          initialValue: 'mccvn.kas.st10@mmvietnam.com',
+        })(
+          <Select
+            mode="multiple"
+            size="large"
+            placeholder="Please select"
+            style={{ width: '100%' }}
+          >
+            <Option value="mccvn.kas.st10@mmvietnam.com">mccvn.kas.st10@mmvietnam.com</Option>
+            <Option value="nhanhnguyen158@gmail.com">nhanhnguyen158@gmail.com</Option>
+          </Select>
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Ghi Chú">
         {form.getFieldDecorator('note', {
@@ -211,19 +232,25 @@ class UpdateForm extends PureComponent {
 
   handleNext = currentStep => {
     const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
+    const { formVals: oldValue , fileList } = this.state;
+    console.log("fieldsValue", currentStep)
     form.validateFields((err, fieldsValue) => {
-      if (err) return;
+      // if (err) {
+      //   message.error("input file")
+      //   return;
+      // }
+
       const formVals = { ...oldValue, ...fieldsValue };
       this.setState(
         {
           formVals,
         },
         () => {
-          if (currentStep < 2) {
+          console.log("currentStep1", currentStep)
+          if (currentStep > 1) {
             this.forward();
           } else {
-            handleUpdate(formVals);
+            handleUpdate(fileList);
           }
         }
       );
@@ -243,82 +270,122 @@ class UpdateForm extends PureComponent {
       currentStep: currentStep + 1,
     });
   };
+  uploadFile = (info) => {
+    console.log("uploadFile", info)
+    let fileList = [...info.fileList];
 
+    // 1. Limit the number of uploaded files
+    // Only to show two recent uploaded files, and old ones will be replaced by the new
+    fileList = fileList.slice(-1);
+
+    // 2. Read from response and show file link
+    fileList = fileList.map((file) => {
+      if (file.response) {
+        // Component will show file.url as link
+        file.url = file.response.url;
+      }
+      return file;
+    });
+    console.log("uploadFile", fileList)
+    this.setState({ fileList });
+  }
   renderContent = (currentStep, formVals) => {
     const { form } = this.props;
-    if (currentStep === 1) {
-      return [
-        <FormItem key="target" {...this.formLayout} label="监控对象">
-          {form.getFieldDecorator('target', {
-            initialValue: formVals.target,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="0">表一</Option>
-              <Option value="1">表二</Option>
-            </Select>
-          )}
-        </FormItem>,
-        <FormItem key="template" {...this.formLayout} label="规则模板">
-          {form.getFieldDecorator('template', {
-            initialValue: formVals.template,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="0">规则模板一</Option>
-              <Option value="1">规则模板二</Option>
-            </Select>
-          )}
-        </FormItem>,
-        <FormItem key="type" {...this.formLayout} label="规则类型">
-          {form.getFieldDecorator('type', {
-            initialValue: formVals.type,
-          })(
-            <RadioGroup>
-              <Radio value="0">强</Radio>
-              <Radio value="1">弱</Radio>
-            </RadioGroup>
-          )}
-        </FormItem>,
-      ];
-    }
-    if (currentStep === 2) {
-      return [
-        <FormItem key="time" {...this.formLayout} label="开始时间">
-          {form.getFieldDecorator('time', {
-            rules: [{ required: true, message: '请选择开始时间！' }],
-          })(
-            <DatePicker
-              style={{ width: '100%' }}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              placeholder="选择开始时间"
-            />
-          )}
-        </FormItem>,
-        <FormItem key="frequency" {...this.formLayout} label="调度周期">
-          {form.getFieldDecorator('frequency', {
-            initialValue: formVals.frequency,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="month">月</Option>
-              <Option value="week">周</Option>
-            </Select>
-          )}
-        </FormItem>,
-      ];
-    }
+    // if (currentStep === 1) {
+    //   return [
+    //     <FormItem key="target" {...this.formLayout} label="监控对象">
+    //       {form.getFieldDecorator('target', {
+    //         initialValue: formVals.target,
+    //       })(
+    //         <Select style={{ width: '100%' }}>
+    //           <Option value="0">表一</Option>
+    //           <Option value="1">表二</Option>
+    //         </Select>
+    //       )}
+    //     </FormItem>,
+    //     <FormItem key="template" {...this.formLayout} label="规则模板">
+    //       {form.getFieldDecorator('template', {
+    //         initialValue: formVals.template,
+    //       })(
+    //         <Select style={{ width: '100%' }}>
+    //           <Option value="0">规则模板一</Option>
+    //           <Option value="1">规则模板二</Option>
+    //         </Select>
+    //       )}
+    //     </FormItem>,
+    //     <FormItem key="type" {...this.formLayout} label="规则类型">
+    //       {form.getFieldDecorator('type', {
+    //         initialValue: formVals.type,
+    //       })(
+    //         <RadioGroup>
+    //           <Radio value="0">强</Radio>
+    //           <Radio value="1">弱</Radio>
+    //         </RadioGroup>
+    //       )}
+    //     </FormItem>,
+    //   ];
+    // }
+    // if (currentStep === 2) {
+    //   return [
+    //     <FormItem key="time" {...this.formLayout} label="开始时间">
+    //       {form.getFieldDecorator('time', {
+    //         rules: [{ required: true, message: '请选择开始时间！' }],
+    //       })(
+    //         <DatePicker
+    //           style={{ width: '100%' }}
+    //           showTime
+    //           format="YYYY-MM-DD HH:mm:ss"
+    //           placeholder="选择开始时间"
+    //         />
+    //       )}
+    //     </FormItem>,
+    //     <FormItem key="frequency" {...this.formLayout} label="调度周期">
+    //       {form.getFieldDecorator('frequency', {
+    //         initialValue: formVals.frequency,
+    //       })(
+    //         <Select style={{ width: '100%' }}>
+    //           <Option value="month">月</Option>
+    //           <Option value="week">周</Option>
+    //         </Select>
+    //       )}
+    //     </FormItem>,
+    //   ];
+    // }
+    const props = {
+      name: 'file',
+      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      multiple: false,
+      onChange: this.uploadFile
+    };
+    
     return [
-      <FormItem key="name" {...this.formLayout} label="Name">
-        {form.getFieldDecorator('name', {
-          rules: [{ required: true, message: 'Please enter your name' }],
-          initialValue: formVals.name,
-        })(<Input placeholder="Name" />)}
-      </FormItem>,
-      <FormItem key="desc" {...this.formLayout} label="Description">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: 'Description', min: 5 }],
-          initialValue: formVals.desc,
-        })(<TextArea rows={4} placeholder="Description" />)}
-      </FormItem>,
+      // <FormItem key="name" {...this.formLayout} label="Name">
+      //   {form.getFieldDecorator('name', {
+      //     rules: [{ required: true, message: 'Please enter your name' }],
+      //     initialValue: formVals.name,
+      //   })(<Input placeholder="Name" />)}
+      // </FormItem>,
+      // <FormItem key="desc" {...this.formLayout} label="Description">
+      //   {form.getFieldDecorator('desc', {
+      //     rules: [{ required: true, message: 'Description', min: 5 }],
+      //     initialValue: formVals.desc,
+      //   })(<TextArea rows={4} placeholder="Description" />)}
+      // </FormItem>,
+      <FormItem key="upload-file" {...this.formLayout} label="File">
+      {form.getFieldDecorator('file', {
+          rules: [{ required: true}],
+      })
+      (<Dragger  {...props} >
+          <p className="ant-upload-drag-icon">
+            <Icon type="inbox" />
+          </p>
+          <p className="ant-upload-text">Click or drag file to this area to upload</p>
+          <p className="ant-upload-hint">
+            Support for a single or bulk upload. Strictly prohibit from uploading company data or
+            other band files
+          </p>
+        </Dragger>
+      )}</FormItem>
     ];
   };
 
@@ -340,22 +407,22 @@ class UpdateForm extends PureComponent {
     if (currentStep === 2) {
       return [
         <Button key="back" style={{ float: 'left' }} onClick={this.backward}>
-          上一步
+          Trở Lại
         </Button>,
         <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-          取消
+          Cancel
         </Button>,
         <Button key="submit" type="primary" onClick={() => this.handleNext(currentStep)}>
-          完成
+          Submit
         </Button>,
       ];
     }
     return [
       <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-        取消
+        Cancel
       </Button>,
       <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
-        下一步
+        Next
       </Button>,
     ];
   };
@@ -369,16 +436,16 @@ class UpdateForm extends PureComponent {
         width={640}
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
-        title="规则配置"
+        title="Import From Excel"
         visible={updateModalVisible}
         footer={this.renderFooter(currentStep)}
         onCancel={() => handleUpdateModalVisible(false, values)}
         afterClose={() => handleUpdateModalVisible()}
       >
         <Steps style={{ marginBottom: 28 }} size="small" current={currentStep}>
-          <Step title="基本信息" />
-          <Step title="配置规则属性" />
-          <Step title="设定调度周期" />
+          <Step title="Upload File" />
+          <Step title="Convert" />
+          <Step title="Complete" />
         </Steps>
         {this.renderContent(currentStep, formVals)}
       </Modal>
@@ -387,7 +454,7 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ importOrder,customer, loading }) => ({
+@connect(({ importOrder, customer, loading }) => ({
   order: importOrder,
   customer: customer,
   loading: loading.models.importOrder,
@@ -411,8 +478,7 @@ class Orders extends PureComponent {
     },
     {
       title: 'Tên Khách Hàng',
-      dataIndex: 'customer',
-      
+      dataIndex: 'customer.name',
     },
 
     {
@@ -423,9 +489,9 @@ class Orders extends PureComponent {
     },
     {
       title: 'Thời gian giao hàng',
-      dataIndex: 'delivery_time',
+      dataIndex: 'delivery_time_str',
       sorter: true,
-      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
 
       // needTotal: true,
     },
@@ -445,7 +511,7 @@ class Orders extends PureComponent {
         <Fragment>
           <a onClick={() => this.handleUpdateModalVisible(true, record)}>Edit</a>
           <Divider type="vertical" />
-          <a onClick={this.handleMenuClick.bind(this,record)}>Delete</a>
+          <a onClick={this.handleMenuClick.bind(this, record)}>Delete</a>
         </Fragment>
       ),
     },
@@ -513,15 +579,15 @@ class Orders extends PureComponent {
   handleMenuClick = e => {
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
-    console.log(selectedRows.map(row => row.id))
+    console.log(selectedRows.map(row => row.id));
     dispatch({
       type: 'importOrder/remove',
       payload: {
         id: e & e.id ? e.id : selectedRows.map(row => row.id),
       },
       callback: () => {
-        message.success("Xoá Đơn Hàng Thành Công");
-        this.componentDidMount()
+        message.success('Xoá Đơn Hàng Thành Công');
+        this.componentDidMount();
         this.setState({
           selectedRows: [],
         });
@@ -597,36 +663,35 @@ class Orders extends PureComponent {
       payload: {
         ...fields,
       },
-      callback : ()=>{
+      callback: () => {
         message.success('Thêm Đơn Hàng Thành Công');
         this.componentDidMount();
-        
+        this.handleModalVisible();
+      },
+    });
+  };
+
+  handleUpdate = fileList => {
+    const { dispatch } = this.props;
+    const formData = new FormData();
+    formData.append("file",fileList[0].originFileObj)
+    // formData.append("aa","aa")
+    // console.log("data",fileList[0].originFileObj, formData)
+    dispatch({
+      type: 'importOrder/upload',
+      payload: {
+        data: formData
+      },
+      callback : ()=>{
+        message.success('Upload thành công');
+        this.componentDidMount()
+        this.handleUpdateModalVisible();
       }
     });
 
     
-    this.handleModalVisible();
-  };
-
-  handleUpdate = fields => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-    dispatch({
-      type: 'importOrder/update',
-      payload: {
-        query: formValues,
-        body: {
-          name: fields.name,
-          desc: fields.desc,
-          key: fields.key,
-        },
-      },
-    });
-
-    message.success('配置成功');
-    this.handleUpdateModalVisible();
-  };
-
+  }
+  
   renderSimpleForm() {
     const {
       form: { getFieldDecorator },
@@ -750,14 +815,13 @@ class Orders extends PureComponent {
     const {
       order: { data },
       loading,
-      
     } = this.props;
-    const {customer = {}} = this.props
-    if (loading || data == undefined || data.length == 0) {
+    const { customer = {} } = this.props;
+    if (data == undefined || data.length == 0) {
       return [];
     }
-    
-    let orderData = data.data || []
+
+    let orderData = data.data || [];
     // console.log('ok', this.props);
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     const menu = (
@@ -784,6 +848,13 @@ class Orders extends PureComponent {
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 Tạo Đơn Hàng Mới
               </Button>
+              <Button
+                icon="plus"
+                type="primary"
+                onClick={() => this.handleUpdateModalVisible(true)}
+              >
+                Import
+              </Button>
               {selectedRows.length > 0 && (
                 <span>
                   <Button>Select All</Button>
@@ -807,7 +878,7 @@ class Orders extends PureComponent {
           </div>
         </Card>
         <CreateForm {...parentMethods} modalVisible={modalVisible} customer={customer.data} />
-        {stepFormValues && Object.keys(stepFormValues).length ? (
+        {stepFormValues ? (
           <UpdateForm
             {...updateMethods}
             updateModalVisible={updateModalVisible}

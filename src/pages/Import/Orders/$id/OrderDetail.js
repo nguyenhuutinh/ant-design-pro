@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Badge, Table, Divider, Form , Modal, Button} from 'antd';
+import { Card, Badge, Table, Divider, Form , Modal, Button, message} from 'antd';
 import DescriptionList from '@/components/DescriptionList';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './OrderDetail.less';
@@ -8,6 +8,7 @@ import moment from 'moment';
 import StandardTable from '@/components/StandardTable';
 const { Description } = DescriptionList;
 
+const debug = console.log
 
 @connect(({ importOrder,importProduct, loading }) => ({
   order: importOrder,
@@ -17,6 +18,7 @@ const { Description } = DescriptionList;
 class OrderDetail extends Component {
   state = {}
   componentDidMount() {
+    debug("componentDidMount")
     const { dispatch, match } = this.props;
     const { params } = match;
 
@@ -71,7 +73,7 @@ class OrderDetail extends Component {
   onAddProducts = (e) =>{
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
-    console.log(this.props.order)
+    console.log(this.props)
     dispatch({
       type: 'importOrder/updateProducts',
       payload: {
@@ -79,10 +81,11 @@ class OrderDetail extends Component {
         productIDs: e & e.id ? e.id : selectedRows.map(row => row.id),
       },
       callback: (res)=>{
+        debug("res",res)
         if(res){
-          this.handleModalVisible()
-          message.success("Thêm Sản Phẩm Thành Công");
           this.componentDidMount()
+          this.handleModalVisible()
+          message.success("Update Sản Phẩm Thành Công");
         }
       },
     });    
@@ -92,8 +95,8 @@ class OrderDetail extends Component {
     const { order = {}, loading, products ={} } = this.props;
     const {data: productList = []} = products.data || {}
     const {modalVisible, selectedRows=[]} = this.state;
-    // console.log("productList",productList)
     const { productIDs = [], customer = {} } = order.data || {};
+    console.log("productIDs",productIDs)
     const orderDetail = order.data || {}
     // let goodsData = [];
     // if (basicGoods.length) {
@@ -143,15 +146,7 @@ class OrderDetail extends Component {
         key: 'name',
         // render: renderContent,
       },
-      {
-        title: 'Image',
-        dataIndex: 'image',
-        key: 'image',
-        render: (text) =>{
-          return <img style={{maxWidth:'100px'}}src={text}/>
-        }
-        ,
-      },
+      
       {
         title: 'Đơn Vị Tính',
         dataIndex: 'dvt',
@@ -184,6 +179,63 @@ class OrderDetail extends Component {
         },
       },
     ];
+
+    const productListColumns = [
+      {
+        title: 'Product Code',
+        dataIndex: 'product_id.prd_code',
+        key: 'prd_code',
+        // render: (text, row, index) => {
+          // if (index < basicGoods.length) {
+          //   return <a href="">{text}</a>;
+          // }
+          // return {
+          //   children: <span style={{ fontWeight: 600 }}>总计</span>,
+          //   props: {
+          //     colSpan: 4,
+          //   },
+          // };
+        // },
+      },
+      {
+        title: 'Product Name',
+        dataIndex: 'product_id.name',
+        key: 'name',
+        // render: renderContent,
+      },
+      
+      {
+        title: 'Đơn Vị Tính',
+        dataIndex: 'product_id.dvt',
+        key: 'dvt',
+        align: 'right',
+        render: renderContent,
+      },
+      {
+        title: 'Lưu Ý',
+        dataIndex: 'note',
+        key: 'note',
+        align: 'right',
+        render: (text, row, index) => {
+          // if (index < basicGoods.length) {
+          //   return text;
+          // }
+          return <span style={{ color: 'red' }}>{text}</span>;
+        },
+      },
+      {
+        title: 'Số Lượng',
+        dataIndex: 'quantity',
+        key: 'amount',
+        align: 'right',
+        render: (text, row, index) => {
+          // if (index < basicGoods.length) {
+          //   return text;
+          // }
+          return <span style={{ fontWeight: 600 }}>{text}</span>;
+        },
+      },
+    ];
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleSelectRows: this.handleSelectRows,
@@ -196,16 +248,17 @@ class OrderDetail extends Component {
       <PageHeaderWrapper title="CHI TIẾT ĐƠN HÀNG" loading={loading}>
         <Card bordered={false}>
           <DescriptionList size="large" title="Thông tin Khách Hàng" style={{ marginBottom: 32 }}>
-            <Description term="Mã Khách Hàng"><b>{customer._id}</b></Description>
+            {/* <Description term="Mã Khách Hàng"><b>{customer._id}</b></Description> */}
             <Description term="Tên Khách Hàng"><b>{customer.name}</b></Description>
-            <Description term="Email"><b>{customer.email}</b></Description>
+            {/* <Description term="Email"><b>{customer.email}</b></Description> */}
             
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
           <DescriptionList size="large" title="Thông Tin Đơn Hàng" style={{ marginBottom: 32 }}>
             <Description term="NGƯỜI ĐẶT HÀNG"><b>{orderDetail.order_name}</b></Description>
+            <Description term="EMAIL NGƯỜI ĐẶT HÀNG "><b>{orderDetail.customer && orderDetail.customer.email}</b></Description>
             <Description term="ĐỊA CHỈ GIAO HÀNG"><b>{orderDetail.delivery_address}</b></Description>
-            <Description term="TIME GIAO HÀNG"><b>{moment(orderDetail.delivery_time).format('YYYY-MM-DD HH:mm:ss')}</b></Description>
+            <Description term="TIME GIAO HÀNG"><b>{orderDetail.delivery_time_str}</b></Description>
             <Description term="SALES FORCE">{orderDetail.sale_force}</Description>
             <Description term="HOTLINE DELI">{orderDetail.hotline_deli}</Description>
             <Description term="EMAIL">{orderDetail.email}</Description>
@@ -220,7 +273,7 @@ class OrderDetail extends Component {
             pagination={false}
             loading={loading}
             dataSource={productIDs}
-            columns={productColumns}
+            columns={productListColumns}
             rowKey="id"
           />
           {/* <div className={styles.title}>退货进度</div> */}
@@ -243,14 +296,13 @@ class OrderDetail extends Component {
         >
        <StandardTable
               selectedRows={selectedRows}
-              loading={loading}
+              loading={loading.global}
               data={productList}
               columns={productColumns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />
     </Modal>
-  );
       </div>
     );
   }

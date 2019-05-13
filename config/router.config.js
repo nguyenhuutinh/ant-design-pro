@@ -38,7 +38,7 @@ export default [
       // { path: '/', redirect: '/dashboard/analysis', authority: ['admin', 'user'] },
       {
         path: '/',
-        redirect: '/import/products',
+        redirect: '/import/orders',
       },
       // {
       //   path: '/dashboard',

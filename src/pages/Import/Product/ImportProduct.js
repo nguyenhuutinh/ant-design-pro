@@ -408,7 +408,7 @@ class ImportProduct extends PureComponent {
   };
 
   handleMenuClick = e => {
-    console.log("", e)
+    // console.log("", e)
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
     dispatch({
@@ -649,7 +649,7 @@ class ImportProduct extends PureComponent {
       product: { data },
       loading,
     } = this.props;
-    console.log(data)
+    // console.log(data)
     if (data == undefined || data.length == 0) {
       return [];
     }

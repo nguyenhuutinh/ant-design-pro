@@ -1,4 +1,4 @@
-import { queryImportOrders, queryImportOrderDetail, addImportOrder, removeImportOrder, updateImportOrder , updateImportOrderProducts} from '@/services/api';
+import { uploadFile, queryImportOrders, queryImportOrderDetail, addImportOrder, removeImportOrder, updateImportOrder , updateImportOrderProducts} from '@/services/api';
 
 export default {
   namespace: 'importOrder',
@@ -55,7 +55,16 @@ export default {
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
+    },
+    *upload({ payload, callback }, { call, put }) {
+      // console.log(payload, "payload")
+      const response = yield call(uploadFile, payload);
+      // yield put({
+      //   type: 'save',
+      //   payload: response,
+      // });
+      if (callback) callback(response);
     },
   },
 

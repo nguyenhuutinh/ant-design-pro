@@ -223,6 +223,18 @@ export async function updateImportOrderProducts(params = {}) {
   });
 }
 
+
+
+export async function uploadFile(params = {}) {
+  // console.log("params",params)
+  return request(`/api/v1/upload/file`, {
+    method: 'POST',
+    data: params.data,
+    
+  }
+  ,"file");
+}
+
 export async function updateImportOrder(params = {}) {
   
   return request(`/api/v1/import/orders?${stringify(params.query)}`, {
