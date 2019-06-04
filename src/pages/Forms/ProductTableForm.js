@@ -3,7 +3,7 @@ import { Table, Button, Input, message, Popconfirm, Divider } from 'antd';
 import isEqual from 'lodash/isEqual';
 import styles from './style.less';
 
-class TableForm extends PureComponent {
+class ProductTableForm extends PureComponent {
   index = 0;
 
   cacheOriginData = {};
@@ -31,11 +31,10 @@ class TableForm extends PureComponent {
 
   getRowByKey(key, newData) {
     const { data } = this.state;
-    return (newData || data).filter(item => item._id === key)[0];
+    return (newData || data).filter(item => item.key === key)[0];
   }
 
   toggleEditable = (e, key) => {
-    console.log(e, key)
     e.preventDefault();
     const { data } = this.state;
     const newData = data.map(item => ({ ...item }));
@@ -87,8 +86,6 @@ class TableForm extends PureComponent {
       target[fieldName] = e.target.value;
       this.setState({ data: newData });
     }
-    console.log("e", this.state.data)
-    
   }
 
   saveRow(e, key) {
@@ -102,9 +99,8 @@ class TableForm extends PureComponent {
         return;
       }
       const target = this.getRowByKey(key) || {};
-      
-      if (target.product_id && !target.product_id.name) {
-        message.error('error ...');
+      if (!target.product_id.name) {
+        message.error('请填写完整成员信息。');
         e.target.focus();
         this.setState({
           loading: false,
@@ -119,9 +115,7 @@ class TableForm extends PureComponent {
       this.setState({
         loading: false,
       });
-      this.props.onUpdateProducts(this.state.data)
     }, 500);
-    
   }
 
   cancel(e, key) {
@@ -143,38 +137,38 @@ class TableForm extends PureComponent {
     const columns = [
       {
         title: 'Product Code',
-        dataIndex: 'product_id.prd_code',
-        key: 'product_id.prd_code',
-        width: '20%',
-        render: (text, record) => {
-          // if (record.editable) {
-          //   return (
-          //     <Input
-          //       value={text}
-          //       autoFocus
-          //       onChange={e => this.handleFieldChange(e, 'product_id.prd_code', record._id)}
-          //       onKeyPress={e => this.handleKeyPress(e, record._id)}
-          //       placeholder="成员姓名"
-          //     />
-          //   );
-          // }
-          return text;
-        },
-      },
-      {
-        title: 'Name',
-        dataIndex: 'alias',
-        key: 'alias',
+        dataIndex: 'prd_code',
+        key: 'prd_code',
         width: '20%',
         render: (text, record) => {
           if (record.editable) {
             return (
               <Input
-                value={text == undefined ? record.product_id.name : text}
+                value={text}
                 autoFocus
-                onChange={e => this.handleFieldChange(e, 'alias', record._id)}
-                onKeyPress={e => this.handleKeyPress(e, record._id)}
-                placeholder="Alias"
+                onChange={e => this.handleFieldChange(e, 'prd_code', record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                placeholder="成员姓名"
+              />
+            );
+          }
+          return text;
+        },
+      },
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+        width: '20%',
+        render: (text, record) => {
+          if (record.editable) {
+            return (
+              <Input
+                value={text}
+                autoFocus
+                onChange={e => this.handleFieldChange(e, 'name', record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                placeholder="成员姓名"
               />
             );
           }
@@ -191,9 +185,9 @@ class TableForm extends PureComponent {
             return (
               <Input
                 value={text}
-                onChange={e => this.handleFieldChange(e, 'quantity', record._id)}
-                onKeyPress={e => this.handleKeyPress(e, record._id)}
-                placeholder="quantity"
+                onChange={e => this.handleFieldChange(e, 'quantity', record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                placeholder="工号"
               />
             );
           }
@@ -202,20 +196,20 @@ class TableForm extends PureComponent {
       },
       {
         title: 'DVT',
-        dataIndex: 'product_id.dvt',
-        key: 'product_id.dvt',
+        dataIndex: 'dvt',
+        key: 'dvt',
         width: '20%',
         render: (text, record) => {
-          // if (record.editable) {
-          //   return (
-          //     <Input
-          //       value={text}
-          //       onChange={e => this.handleFieldChange(e, 'product_id.dvt', record._id)}
-          //       onKeyPress={e => this.handleKeyPress(e, record._id)}
-          //       placeholder="dvt"
-          //     />
-          //   );
-          // }
+          if (record.editable) {
+            return (
+              <Input
+                value={text}
+                onChange={e => this.handleFieldChange(e, 'dvt', record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                placeholder="工号"
+              />
+            );
+          }
           return text;
         },
       },
@@ -229,9 +223,9 @@ class TableForm extends PureComponent {
             return (
               <Input
                 value={text}
-                onChange={e => this.handleFieldChange(e, 'price', record._id)}
-                onKeyPress={e => this.handleKeyPress(e, record._id)}
-                placeholder="price"
+                onChange={e => this.handleFieldChange(e, 'price', record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                placeholder="所属部门"
               />
             );
           }
@@ -250,9 +244,9 @@ class TableForm extends PureComponent {
             if (record.isNew) {
               return (
                 <span>
-                  <a onClick={e => this.saveRow(e, record._id)}>Save</a>
+                  <a onClick={e => this.saveRow(e, record.key)}>Save</a>
                   <Divider type="vertical" />
-                  <Popconfirm title="Xoa San Pham?" onConfirm={() => this.remove(record._id)}>
+                  <Popconfirm title="Xoa San Pham?" onConfirm={() => this.remove(record.key)}>
                     <a>Remove</a>
                   </Popconfirm>
                 </span>
@@ -260,17 +254,17 @@ class TableForm extends PureComponent {
             }
             return (
               <span>
-                <a onClick={e => this.saveRow(e, record._id)}>Save</a>
+                <a onClick={e => this.saveRow(e, record.key)}>Save</a>
                 <Divider type="vertical" />
-                <a onClick={e => this.cancel(e, record._id)}>Cancel</a>
+                <a onClick={e => this.cancel(e, record.key)}>Cancel</a>
               </span>
             );
           }
           return (
             <span>
-              <a onClick={e => this.toggleEditable(e, record._id)}>Edit</a>
+              <a onClick={e => this.toggleEditable(e, record.key)}>Edit</a>
               <Divider type="vertical" />
-              <Popconfirm title="Xoá Sản Phẩm?" onConfirm={() => this.remove(record._id)}>
+              <Popconfirm title="Xoá Sản Phẩm?" onConfirm={() => this.remove(record.key)}>
                 <a>Remove</a>
               </Popconfirm>
             </span>
@@ -303,4 +297,4 @@ class TableForm extends PureComponent {
   }
 }
 
-export default TableForm;
+export default ProductTableForm;

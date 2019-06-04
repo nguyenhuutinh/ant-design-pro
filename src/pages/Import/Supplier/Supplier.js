@@ -21,12 +21,15 @@ import {
   Divider,
   Steps,
   Radio,
+  Upload
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-import styles from './ImportProduct.less';
+import styles from './Supplier.less';
+const Dragger = Upload.Dragger;
 
+const debug = console.log;
 const FormItem = Form.Item;
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -40,7 +43,7 @@ const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['关闭', '运行中', '已上线', '异常'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, customer = [] } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -51,36 +54,84 @@ const CreateForm = Form.create()(props => {
   return (
     <Modal
       destroyOnClose
-      title="Tạo Sản Phẩm mới"
+      title="Nhập Thông tin nhà CC mới"
       visible={modalVisible}
       onOk={okHandle}
+      width={640}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 15 }} label="Mã Sản Phẩm">
-        {form.getFieldDecorator('prd_code', {
-          rules: [{ required: true, message: 'Mã Sản Phẩm bắt buộc', min: 3 }],
-          initialValue: "kg1"
-        })(<Input placeholder="" />)}
-      </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 15 }} label="Tên Sản Phẩm">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Tên Nhà Cung cấp">
         {form.getFieldDecorator('name', {
-          rules: [{ required: true, message: 'Tên Sản Phẩm bắt buộc', min: 3 }],
-          initialValue: "111"
+          rules: [{ required: true, message: 'Tên Nhà Cung cấp' }],
+        })(
+         <Input />
+        )}
+      </FormItem>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Số Điện Thoại">
+        {form.getFieldDecorator('phone', {
+          rules: [{ required: true, message: 'SDT ' }],
         })(<Input placeholder="" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 15 }} label="Đơn Vị Tính">
-        {form.getFieldDecorator('dvt', {
-          rules: [{ required: true }],
-          initialValue: "kg"
-        })(<Select style={{ width: 120 }}>
-        <Select.Option value="kg">Kg</Select.Option>
-      </Select>)}
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Địa Chỉ">
+        {form.getFieldDecorator('address', {
+          rules: [{ required: true, message: 'Địa Chỉ' }],
+          
+        })(<Input placeholder="" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 15 }} label="Ghi Chú">
-        {form.getFieldDecorator('note', {
-          rules: [{ required: false, message: 'Ghi Chú', min: 5 }],
-        })(<TextArea placeholder="" />)}
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Mã Số Thuế">
+        {form.getFieldDecorator('ma_so_thue', {
+          rules: [{ required: false, message: 'Mã Số Thuế' }],
+          
+        })(<Input placeholder="" />)}
       </FormItem>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Type">
+        {form.getFieldDecorator('type', {
+          rules: [{ required: true, message: 'type' }],
+          initialValue: 'supplier',
+        })(
+          <Select
+            showSearch
+            style={{ width: 400 }}
+            placeholder="type"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            <Option value="supplier">SUPPLIER</Option>
+            <Option value="store">STORE</Option>
+          </Select>
+        )}
+      </FormItem>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="email">
+        {form.getFieldDecorator('email', {
+          rules: [{ required: false, message: 'email' }, {
+            type: 'email',
+            message: 'The input is not valid E-mail!',
+          },],
+          
+        })(<Input placeholder="" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Sale Force">
+        {form.getFieldDecorator('sale_force', {
+          rules: [{ required: false, message: 'sale force' }],
+          
+        })(<Input placeholder="" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="hotline deli">
+        {form.getFieldDecorator('hotline_deli', {
+          rules: [{ required: false, message: 'hotline_deli' }],
+          
+        })(<Input placeholder="" />)}
+      </FormItem>
+      
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="cc email">
+        {form.getFieldDecorator('cc_email', {
+          rules: [{ required: false, message: 'cc_email' }],
+          
+        })(<Input placeholder="" />)}
+      </FormItem>
+      
     </Modal>
   );
 });
@@ -118,19 +169,25 @@ class UpdateForm extends PureComponent {
 
   handleNext = currentStep => {
     const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
+    const { formVals: oldValue , fileList } = this.state;
+    // console.log("fieldsValue", currentStep)
     form.validateFields((err, fieldsValue) => {
-      if (err) return;
+      // if (err) {
+      //   message.error("input file")
+      //   return;
+      // }
+
       const formVals = { ...oldValue, ...fieldsValue };
       this.setState(
         {
           formVals,
         },
         () => {
-          if (currentStep < 2) {
+          console.log("currentStep1", currentStep)
+          if (currentStep > 1) {
             this.forward();
           } else {
-            handleUpdate(formVals);
+            handleUpdate(fileList);
           }
         }
       );
@@ -150,82 +207,122 @@ class UpdateForm extends PureComponent {
       currentStep: currentStep + 1,
     });
   };
+  uploadFile = (info) => {
+    console.log("uploadFile", info)
+    let fileList = [...info.fileList];
 
+    // 1. Limit the number of uploaded files
+    // Only to show two recent uploaded files, and old ones will be replaced by the new
+    fileList = fileList.slice(-1);
+
+    // 2. Read from response and show file link
+    fileList = fileList.map((file) => {
+      if (file.response) {
+        // Component will show file.url as link
+        file.url = file.response.url;
+      }
+      return file;
+    });
+    console.log("uploadFile", fileList)
+    this.setState({ fileList });
+  }
   renderContent = (currentStep, formVals) => {
     const { form } = this.props;
-    if (currentStep === 1) {
-      return [
-        <FormItem key="target" {...this.formLayout} label="监控对象">
-          {form.getFieldDecorator('target', {
-            initialValue: formVals.target,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="0">表一</Option>
-              <Option value="1">表二</Option>
-            </Select>
-          )}
-        </FormItem>,
-        <FormItem key="template" {...this.formLayout} label="规则模板">
-          {form.getFieldDecorator('template', {
-            initialValue: formVals.template,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="0">规则模板一</Option>
-              <Option value="1">规则模板二</Option>
-            </Select>
-          )}
-        </FormItem>,
-        <FormItem key="type" {...this.formLayout} label="规则类型">
-          {form.getFieldDecorator('type', {
-            initialValue: formVals.type,
-          })(
-            <RadioGroup>
-              <Radio value="0">强</Radio>
-              <Radio value="1">弱</Radio>
-            </RadioGroup>
-          )}
-        </FormItem>,
-      ];
-    }
-    if (currentStep === 2) {
-      return [
-        <FormItem key="time" {...this.formLayout} label="开始时间">
-          {form.getFieldDecorator('time', {
-            rules: [{ required: true, message: '请选择开始时间！' }],
-          })(
-            <DatePicker
-              style={{ width: '100%' }}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              placeholder="选择开始时间"
-            />
-          )}
-        </FormItem>,
-        <FormItem key="frequency" {...this.formLayout} label="调度周期">
-          {form.getFieldDecorator('frequency', {
-            initialValue: formVals.frequency,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="month">月</Option>
-              <Option value="week">周</Option>
-            </Select>
-          )}
-        </FormItem>,
-      ];
-    }
+    // if (currentStep === 1) {
+    //   return [
+    //     <FormItem key="target" {...this.formLayout} label="监控对象">
+    //       {form.getFieldDecorator('target', {
+    //         initialValue: formVals.target,
+    //       })(
+    //         <Select style={{ width: '100%' }}>
+    //           <Option value="0">表一</Option>
+    //           <Option value="1">表二</Option>
+    //         </Select>
+    //       )}
+    //     </FormItem>,
+    //     <FormItem key="template" {...this.formLayout} label="规则模板">
+    //       {form.getFieldDecorator('template', {
+    //         initialValue: formVals.template,
+    //       })(
+    //         <Select style={{ width: '100%' }}>
+    //           <Option value="0">规则模板一</Option>
+    //           <Option value="1">规则模板二</Option>
+    //         </Select>
+    //       )}
+    //     </FormItem>,
+    //     <FormItem key="type" {...this.formLayout} label="规则类型">
+    //       {form.getFieldDecorator('type', {
+    //         initialValue: formVals.type,
+    //       })(
+    //         <RadioGroup>
+    //           <Radio value="0">强</Radio>
+    //           <Radio value="1">弱</Radio>
+    //         </RadioGroup>
+    //       )}
+    //     </FormItem>,
+    //   ];
+    // }
+    // if (currentStep === 2) {
+    //   return [
+    //     <FormItem key="time" {...this.formLayout} label="开始时间">
+    //       {form.getFieldDecorator('time', {
+    //         rules: [{ required: true, message: '请选择开始时间！' }],
+    //       })(
+    //         <DatePicker
+    //           style={{ width: '100%' }}
+    //           showTime
+    //           format="YYYY-MM-DD HH:mm:ss"
+    //           placeholder="选择开始时间"
+    //         />
+    //       )}
+    //     </FormItem>,
+    //     <FormItem key="frequency" {...this.formLayout} label="调度周期">
+    //       {form.getFieldDecorator('frequency', {
+    //         initialValue: formVals.frequency,
+    //       })(
+    //         <Select style={{ width: '100%' }}>
+    //           <Option value="month">月</Option>
+    //           <Option value="week">周</Option>
+    //         </Select>
+    //       )}
+    //     </FormItem>,
+    //   ];
+    // }
+    const props = {
+      name: 'file',
+      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      multiple: false,
+      onChange: this.uploadFile
+    };
+    
     return [
-      <FormItem key="name" {...this.formLayout} label="Name">
-        {form.getFieldDecorator('name', {
-          rules: [{ required: true, message: 'Please enter your name' }],
-          initialValue: formVals.name,
-        })(<Input placeholder="Name" />)}
-      </FormItem>,
-      <FormItem key="desc" {...this.formLayout} label="Description">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: 'Description', min: 5 }],
-          initialValue: formVals.desc,
-        })(<TextArea rows={4} placeholder="Description" />)}
-      </FormItem>,
+      // <FormItem key="name" {...this.formLayout} label="Name">
+      //   {form.getFieldDecorator('name', {
+      //     rules: [{ required: true, message: 'Please enter your name' }],
+      //     initialValue: formVals.name,
+      //   })(<Input placeholder="Name" />)}
+      // </FormItem>,
+      // <FormItem key="desc" {...this.formLayout} label="Description">
+      //   {form.getFieldDecorator('desc', {
+      //     rules: [{ required: true, message: 'Description', min: 5 }],
+      //     initialValue: formVals.desc,
+      //   })(<TextArea rows={4} placeholder="Description" />)}
+      // </FormItem>,
+      <FormItem key="upload-file" {...this.formLayout} label="File">
+      {form.getFieldDecorator('file', {
+          rules: [{ required: true}],
+      })
+      (<Dragger  {...props} >
+          <p className="ant-upload-drag-icon">
+            <Icon type="inbox" />
+          </p>
+          <p className="ant-upload-text">Click or drag file to this area to upload</p>
+          <p className="ant-upload-hint">
+            Support for a single or bulk upload. Strictly prohibit from uploading company data or
+            other band files
+          </p>
+        </Dragger>
+      )}</FormItem>
     ];
   };
 
@@ -247,22 +344,22 @@ class UpdateForm extends PureComponent {
     if (currentStep === 2) {
       return [
         <Button key="back" style={{ float: 'left' }} onClick={this.backward}>
-          上一步
+          Trở Lại
         </Button>,
         <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-          取消
+          Cancel
         </Button>,
         <Button key="submit" type="primary" onClick={() => this.handleNext(currentStep)}>
-          完成
+          Submit
         </Button>,
       ];
     }
     return [
       <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-        取消
+        Cancel
       </Button>,
       <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
-        下一步
+        Next
       </Button>,
     ];
   };
@@ -276,16 +373,16 @@ class UpdateForm extends PureComponent {
         width={640}
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
-        title="规则配置"
+        title="Import From Excel"
         visible={updateModalVisible}
         footer={this.renderFooter(currentStep)}
         onCancel={() => handleUpdateModalVisible(false, values)}
         afterClose={() => handleUpdateModalVisible()}
       >
         <Steps style={{ marginBottom: 28 }} size="small" current={currentStep}>
-          <Step title="基本信息" />
-          <Step title="配置规则属性" />
-          <Step title="设定调度周期" />
+          <Step title="Upload File" />
+          <Step title="Convert" />
+          <Step title="Complete" />
         </Steps>
         {this.renderContent(currentStep, formVals)}
       </Modal>
@@ -294,12 +391,13 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ importProduct, loading }) => ({
-  product: importProduct,
-  loading: loading.models.importProduct,
+@connect(({ supplier, customer, loading }) => ({
+  supplier,
+  customer: customer,
+  loading: loading.models.supplier,
 }))
 @Form.create()
-class ImportProduct extends PureComponent {
+class Orders extends PureComponent {
   state = {
     modalVisible: false,
     updateModalVisible: false,
@@ -311,29 +409,43 @@ class ImportProduct extends PureComponent {
 
   columns = [
     {
-      title: 'Product Code',
-      dataIndex: 'prd_code',
-    },
-    {
-      title: 'Product Name',
+      title: 'Tên',
       dataIndex: 'name',
-      
-      render: text => <a onClick={() => this.previewItem(text)}>{text}</a>,
+      render: (text, order) => <a onClick={() => this.previewItem(order.id)}>{text}</a>,
+    },
+    {
+      title: 'Số Điện Thoại',
+      dataIndex: 'phone',
     },
 
     {
-      title: 'DVT',
-      dataIndex: 'dvt',
+      title: 'Địa chỉ',
+      dataIndex: 'address',
       sorter: true,
-
-      
+      // needTotal: true,
     },
     {
-      title: 'Note',
+      title: 'Email',
+      dataIndex: 'email',
+      sorter: true,
+      // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+
+      // needTotal: true,
+    },
+    {
+      title: 'Mã Số Thuế',
+      dataIndex: 'ma_so_thue',
+      sorter: true,
+      // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+
+      // needTotal: true,
+    },
+    {
+      title: 'Ghi Chú',
       dataIndex: 'note',
     },
     {
-      title: 'Updated At',
+      title: 'Cập Nhật lúc',
       dataIndex: 'updatedAt',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
@@ -353,10 +465,9 @@ class ImportProduct extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'importProduct/fetch',
+      type: 'supplier/fetch',
     });
   }
-
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -379,13 +490,13 @@ class ImportProduct extends PureComponent {
     }
 
     dispatch({
-      type: 'importProduct/fetch',
+      type: 'supplier/fetch',
       payload: params,
     });
   };
 
   previewItem = id => {
-    router.push(`/profile/basic/${id}`);
+    router.push(`supplier/${id}`);
   };
 
   handleFormReset = () => {
@@ -395,7 +506,7 @@ class ImportProduct extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'importProduct/fetch',
+      type: 'supplier/fetch',
       payload: {},
     });
   };
@@ -408,17 +519,17 @@ class ImportProduct extends PureComponent {
   };
 
   handleMenuClick = e => {
-    // console.log("", e)
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
+    console.log(selectedRows.map(row => row.id));
     dispatch({
-      type: 'importProduct/remove',
+      type: 'supplier/remove',
       payload: {
         id: e & e.id ? e.id : selectedRows.map(row => row.id),
       },
       callback: () => {
-        message.success("Xoá Sản Phẩm Thành Công");
-        this.componentDidMount()
+        message.success('Xoá Đơn Hàng Thành Công');
+        this.componentDidMount();
         this.setState({
           selectedRows: [],
         });
@@ -428,7 +539,7 @@ class ImportProduct extends PureComponent {
     // switch (e.key) {
     //   case 'remove':
     //     dispatch({
-    //       type: 'importProduct/remove',
+    //       type: 'importOrder/remove',
     //       payload: {
     //         key: selectedRows.map(row => row.key),
     //       },
@@ -468,7 +579,7 @@ class ImportProduct extends PureComponent {
       });
 
       dispatch({
-        type: 'importProduct/fetch',
+        type: 'supplier/fetch',
         payload: values,
       });
     });
@@ -488,45 +599,42 @@ class ImportProduct extends PureComponent {
   };
 
   handleAdd = fields => {
-    // console.log(fields)
+    console.log(fields)
     const { dispatch } = this.props;
-    fields.en_name = fields.name
-    fields.alias = fields.name
     dispatch({
-      type: 'importProduct/add',
+      type: 'supplier/add',
       payload: {
-        ...fields
+        ...fields,
       },
-      callback: (res)=>{
-        if(res){
-          this.handleModalVisible()
-          message.success("Thêm Sản Phẩm Thành Công");
-          this.componentDidMount()
-        }
-      },
-    });    
-    
-  };
-
-  handleUpdate = fields => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-    dispatch({
-      type: 'importProduct/update',
-      payload: {
-        query: formValues,
-        body: {
-          name: fields.name,
-          desc: fields.desc,
-          key: fields.key,
-        },
+      callback: () => {
+        message.success('Thêm Đơn Hàng Thành Công');
+        this.componentDidMount();
+        this.handleModalVisible();
       },
     });
-
-    message.success('配置成功');
-    this.handleUpdateModalVisible();
   };
 
+  handleUpdate = fileList => {
+    const { dispatch } = this.props;
+    const formData = new FormData();
+    formData.append("file",fileList[0].originFileObj)
+    // formData.append("aa","aa")
+    // console.log("data",fileList[0].originFileObj, formData)
+    dispatch({
+      type: 'supplier/upload',
+      payload: {
+        data: formData
+      },
+      callback : ()=>{
+        message.success('Upload thành công');
+        this.componentDidMount()
+        this.handleUpdateModalVisible();
+      }
+    });
+
+    
+  }
+  
   renderSimpleForm() {
     const {
       form: { getFieldDecorator },
@@ -648,18 +756,21 @@ class ImportProduct extends PureComponent {
 
   render() {
     const {
-      product: { data },
+      supplier: { data },
       loading,
     } = this.props;
-    // console.log(data)
+    const { customer = {} } = this.props;
     if (data == undefined || data.length == 0) {
       return [];
     }
+
+    let orderData = data.data || [];
     // console.log('ok', this.props);
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-       
+        <Menu.Item key="remove">删除</Menu.Item>
+        <Menu.Item key="approval">批量审批</Menu.Item>
       </Menu>
     );
 
@@ -678,32 +789,39 @@ class ImportProduct extends PureComponent {
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                Tạo Sản Phẩm Mới
+                Tạo Nhà Cung Cấp Mới
+              </Button>
+              <Button
+                icon="plus"
+                type="primary"
+                onClick={() => this.handleUpdateModalVisible(true)}
+              >
+                Import
               </Button>
               {selectedRows.length > 0 && (
                 <span>
                   <Button>Select All</Button>
+                  <Button onClick={this.handleMenuClick}>Delete</Button>
                   {/* <Dropdown overlay={menu}>
                     <Button>
-                      Actions <Icon type="down" />
+                      更多操作 <Icon type="down" />
                     </Button>
                   </Dropdown> */}
-                  <Button onClick={this.handleMenuClick}>Delete</Button>
                 </span>
               )}
             </div>
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={data.data}
+              data={orderData}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
-        {stepFormValues && Object.keys(stepFormValues).length ? (
+        <CreateForm {...parentMethods} modalVisible={modalVisible} customer={customer.data} />
+        {stepFormValues ? (
           <UpdateForm
             {...updateMethods}
             updateModalVisible={updateModalVisible}
@@ -715,4 +833,4 @@ class ImportProduct extends PureComponent {
   }
 }
 
-export default ImportProduct;
+export default Orders;

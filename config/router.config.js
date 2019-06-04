@@ -132,6 +132,7 @@ export default [
                 component: './Import/Orders/OrderList',
                 hideInMenu: true,
               },
+             
               {
                 path: '/import/orders/:id',
                 name: 'orderdetail',
@@ -139,6 +140,11 @@ export default [
                 hideInMenu: true,
               },
             ],
+          },
+          {
+            path: '/import/supplier',
+            name: 'supplier',
+            component: './Import/Supplier/Supplier',
           },
         ],
       },

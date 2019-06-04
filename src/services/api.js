@@ -89,7 +89,6 @@ export async function postLogin(params) {
 export async function queryImportProduct(params) {
   return request(`/api/v1/import/products?${stringify(params)}`);
 }
-
 export async function removeImportProduct(params) {
   return request('/api/v1/import/products', {
     method: 'DELETE',
@@ -114,6 +113,42 @@ export async function updateImportProduct(params = {}) {
     data: {
       ...params.body,
       method: 'update',
+    },
+  });
+}
+
+
+export async function querySupplier(params) {
+  return request(`/api/v1/supplier?${stringify(params)}`);
+}
+
+export async function addSupplier(params) {
+  return request('/api/v1/supplier', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function removeSupplier(params) {
+  return request('/api/v1/supplier', {
+    method: 'DELETE',
+    data: {
+      ...params
+    },
+  });
+}
+export async function querySupplierDetail(params) {
+  return request(`/api/v1/sale/supplier/${params}`);
+}
+
+
+export async function updateSupplier(params = {}) {
+  return request(`/api/v1/import/supplier?${stringify(params.query)}`, {
+    method: 'POST',
+    data: {
+      ...params.body
     },
   });
 }
@@ -215,6 +250,17 @@ export async function addImportOrder(params) {
 
 export async function updateImportOrderProducts(params = {}) {
   return request(`/api/v1/import/orders/${params.id}/products`, {
+    method: 'PUT',
+    data: {
+      ...params,
+    },
+    
+  });
+}
+
+
+export async function updateImportOrderProducts2(params = {}) {
+  return request(`/api/v1/import/orders/${params.id}/orderproducts`, {
     method: 'PUT',
     data: {
       ...params,

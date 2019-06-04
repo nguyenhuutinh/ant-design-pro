@@ -43,7 +43,7 @@ const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['关闭', '运行中', '已上线', '异常'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible, customer = [] } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, supplier = [] } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -60,14 +60,16 @@ const CreateForm = Form.create()(props => {
       width={640}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Thông Tin Khách Hàng">
-        {form.getFieldDecorator('customer_id', {
-          rules: [{ required: true, message: 'Thông tin khách hàng' }],
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Nhà Cung Cấp">
+        {form.getFieldDecorator('supplier_id', {
+          rules: [{ required: true, message: 'Nhà Cung Cấp' }],
         })(
-          <Select style={{ width: 220 }}>
-            {customer.data &&
-              customer.data.map((data, key) => {
-                return <Option key={key} value={data.id}>{data.name + ' - ' + data.phone}</Option>;
+          <Select style={{ width: '100%' }}>
+            {supplier.data &&
+              supplier.data.map((data, key) => {
+                if(data.type =="supplier"){
+                  return <Option key={key} value={data.id}>{data.name + ' - ' + data.phone}</Option>;
+                }
               })}
           </Select>
         )}
@@ -78,9 +80,9 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="" />)}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Người Đặt Hàng">
-        {form.getFieldDecorator('order_name', {
+        {form.getFieldDecorator('order_contact_id', {
           rules: [{ required: true, message: 'Người Đặt Hàng' }],
-          initialValue: 'MS.HỒNG - 0888651775',
+          initialValue: '5cdd9bd7303a64a48ef60862',
         })(
           <Select
             showSearch
@@ -91,7 +93,7 @@ const CreateForm = Form.create()(props => {
               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
           >
-            <Option value="MS.HỒNG - 0888651775">MS.HỒNG - 0888651775</Option>
+            <Option value={"5cdd9bd7303a64a48ef60862"}>MS.HỒNG - 0888651775</Option>
           </Select>
         )}
       </FormItem>
@@ -122,74 +124,7 @@ const CreateForm = Form.create()(props => {
         })(<DatePicker showTime format="MM-DD HH:mm" />)}
       </FormItem>
 
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Sale Force">
-        {form.getFieldDecorator('sale_force', {
-          initialValue: 'HONG NHANH - 090 705 6593',
-        })(
-          <Select
-            showSearch
-            style={{ width: 400 }}
-            placeholder="Chọn Địa chỉ"
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            <Option value="HONG NHANH - 090 705 6593">HONG NHANH - 090 705 6593</Option>
-          </Select>
-        )}
-      </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Hotline Deli">
-        {form.getFieldDecorator('hotline_deli', {
-          initialValue: '0932.032.719',
-        })(
-          <Select
-            showSearch
-            style={{ width: 400 }}
-            placeholder="Chọn Địa chỉ"
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            <Option value="0932.032.719">0932.032.719</Option>
-          </Select>
-        )}
-      </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Email">
-        {form.getFieldDecorator('email', {
-          initialValue: 'mccvn.delivery.st10@mmvietnam.com',
-        })(
-          <Select
-            showSearch
-            style={{ width: 400 }}
-            placeholder="Chọn Địa chỉ"
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            <Option value="mccvn.delivery.st10@mmvietnam.com">
-              mccvn.delivery.st10@mmvietnam.com
-            </Option>
-          </Select>
-        )}
-      </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="CC Email">
-        {form.getFieldDecorator('cc_email', {
-          initialValue: 'mccvn.kas.st10@mmvietnam.com',
-        })(
-          <Select
-            mode="multiple"
-            size="large"
-            placeholder="Please select"
-            style={{ width: '100%' }}
-          >
-            <Option value="mccvn.kas.st10@mmvietnam.com">mccvn.kas.st10@mmvietnam.com</Option>
-            <Option value="nhanhnguyen158@gmail.com">nhanhnguyen158@gmail.com</Option>
-          </Select>
-        )}
-      </FormItem>
+      
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label="Ghi Chú">
         {form.getFieldDecorator('note', {
           rules: [{ required: false, message: 'note ' }],
@@ -454,9 +389,9 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ importOrder, customer, loading }) => ({
+@connect(({ importOrder, supplier, loading }) => ({
   order: importOrder,
-  customer: customer,
+  supplier,
   loading: loading.models.importOrder,
 }))
 @Form.create()
@@ -478,7 +413,7 @@ class Orders extends PureComponent {
     },
     {
       title: 'Tên Khách Hàng',
-      dataIndex: 'customer.name',
+      dataIndex: 'supplier.name',
     },
 
     {
@@ -523,7 +458,8 @@ class Orders extends PureComponent {
       type: 'importOrder/fetch',
     });
     dispatch({
-      type: 'customer/fetch',
+      type: 'supplier/fetch',
+      payload: {type:''},
     });
   }
 
@@ -658,6 +594,7 @@ class Orders extends PureComponent {
 
   handleAdd = fields => {
     const { dispatch } = this.props;
+    console.log(fields)
     dispatch({
       type: 'importOrder/add',
       payload: {
@@ -816,7 +753,7 @@ class Orders extends PureComponent {
       order: { data },
       loading,
     } = this.props;
-    const { customer = {} } = this.props;
+    const { supplier = {} } = this.props;
     if (data == undefined || data.length == 0) {
       return [];
     }
@@ -877,7 +814,7 @@ class Orders extends PureComponent {
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} customer={customer.data} />
+        <CreateForm {...parentMethods} modalVisible={modalVisible} supplier={supplier.data} />
         {stepFormValues ? (
           <UpdateForm
             {...updateMethods}
