@@ -142,6 +142,15 @@ class TableForm extends PureComponent {
   render() {
     const columns = [
       {
+        title: 'No',
+        dataIndex: '',
+        key: '',
+        width: '5%',
+        render: (text, record, index) => {
+          return index + 1
+        }
+      },
+      {
         title: 'Product Code',
         dataIndex: 'product_id.prd_code',
         key: 'product_id.prd_code',
@@ -287,7 +296,7 @@ class TableForm extends PureComponent {
           loading={loading}
           columns={columns}
           dataSource={data}
-          pagination={false}
+          pagination={true}
           rowClassName={record => (record.editable ? styles.editable : '')}
         />
         {/* <Button

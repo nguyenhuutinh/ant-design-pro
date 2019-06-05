@@ -89,8 +89,8 @@ class LoginPage extends Component {
               name="email"
               placeholder={`${formatMessage({
                 id: 'app.login.userName',
-              })}: admin@thousandhands.com`}
-              defaultValue="admin@thousandhands.com"
+              })}:`}
+              defaultValue=""
               rules={[
                 {
                   required: true,
@@ -100,11 +100,10 @@ class LoginPage extends Component {
             />
             <Password
               name="password"
-              placeholder={`${formatMessage({ id: 'app.login.password' })}: 123456`}
-              defaultValue="123456"
+              placeholder={`${formatMessage({ id: 'app.login.password' })}`}
+              defaultValue=""
               rules={[
                 {
-                  initialValue: 'hello@123',
                   required: true,
                   message: formatMessage({ id: 'validation.password.required' }),
                 },
