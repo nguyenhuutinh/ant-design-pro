@@ -66,11 +66,7 @@ class SupplierTableForm extends PureComponent {
   };
 
   remove(key) {
-    const { data } = this.state;
-    const { onChange } = this.props;
-    const newData = data.filter(item => item.key !== key);
-    this.setState({ data: newData });
-    onChange(newData);
+    this.props.onRemoveSupplier(key)
   }
 
   handleKeyPress(e, key) {
@@ -299,7 +295,7 @@ class SupplierTableForm extends PureComponent {
                 <span>
                   <a onClick={e => this.saveRow(e, record.id)}>Save</a>
                   <Divider type="vertical" />
-                  <Popconfirm title="Xoa San Pham?" onConfirm={() => this.remove(record.id)}>
+                  <Popconfirm title="Xoa Nha CC?" onConfirm={() => this.remove(record.id)}>
                     <a>Remove</a>
                   </Popconfirm>
                 </span>
@@ -317,7 +313,7 @@ class SupplierTableForm extends PureComponent {
             <span>
               <a onClick={e => this.toggleEditable(e, record.id)}>Edit</a>
               <Divider type="vertical" />
-              <Popconfirm title="Xoá Sản Phẩm?" onConfirm={() => this.remove(record.id)}>
+              <Popconfirm title="Xoá NCC?" onConfirm={() => this.remove(record.id)}>
                 <a>Remove</a>
               </Popconfirm>
             </span>

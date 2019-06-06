@@ -276,7 +276,22 @@ class Orders extends PureComponent {
       expandForm: !expandForm,
     });
   };
-
+  onRemoveSupplier = (e) =>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'supplier/remove',
+      payload: {
+        id: e,
+      },
+      callback: () => {
+        message.success('Xoá NCC Thành Công');
+        this.componentDidMount();
+        this.setState({
+          selectedRows: [],
+        });
+      },
+    });
+  }
   handleMenuClick = e => {
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
@@ -287,7 +302,7 @@ class Orders extends PureComponent {
         id: e & e.id ? e.id : selectedRows.map(row => row.id),
       },
       callback: () => {
-        message.success('Xoá Đơn Hàng Thành Công');
+        message.success('Xoá NCC Thành Công');
         this.componentDidMount();
         this.setState({
           selectedRows: [],
@@ -363,7 +378,7 @@ class Orders extends PureComponent {
       type: 'supplier/update',
       payload: data,
       callback: () => {
-        message.success('Update Đơn Hàng Thành Công');
+        message.success('Update NCC Thành Công');
         this.componentDidMount();
         this.handleModalVisible();
       },
@@ -378,7 +393,7 @@ class Orders extends PureComponent {
         ...fields,
       },
       callback: () => {
-        message.success('Thêm Đơn Hàng Thành Công');
+        message.success('Thêm NCC Thành Công');
         this.componentDidMount();
         this.handleModalVisible();
       },
@@ -404,8 +419,7 @@ class Orders extends PureComponent {
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
+        <Menu.Item key="remove">Delete</Menu.Item>
       </Menu>
     );
 
@@ -447,7 +461,7 @@ class Orders extends PureComponent {
             </div>
             {getFieldDecorator('members', {
               initialValue: orderData,
-            })(<SupplierTableForm onUpdateSupplier={this.onUpdateSupplier} />)}
+            })(<SupplierTableForm onUpdateSupplier={this.onUpdateSupplier} onRemoveSupplier ={this.onRemoveSupplier}/>)}
           </div>
         </Card>
         <CreateForm {...parentMethods} modalVisible={modalVisible} customer={customer.data} />

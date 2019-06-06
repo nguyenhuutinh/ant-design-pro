@@ -412,12 +412,12 @@ class Orders extends PureComponent {
       render: (text, order) => <a onClick={() => this.previewItem(order.id)}>{text}</a>,
     },
     {
-      title: 'Tên Khách Hàng',
+      title: 'Tên NCC',
       dataIndex: 'supplier.name',
     },
 
     {
-      title: 'Địa chỉ',
+      title: 'Địa chỉ giao hàng',
       dataIndex: 'delivery_address',
       sorter: true,
       // needTotal: true,
