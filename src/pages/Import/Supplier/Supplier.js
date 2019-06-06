@@ -27,6 +27,7 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './Supplier.less';
+import SupplierTableForm from '@/pages/Forms/SupplierTableForm';
 const Dragger = Upload.Dragger;
 
 const debug = console.log;
@@ -136,261 +137,9 @@ const CreateForm = Form.create()(props => {
   );
 });
 
-@Form.create()
-class UpdateForm extends PureComponent {
-  static defaultProps = {
-    handleUpdate: () => {},
-    handleUpdateModalVisible: () => {},
-    values: {},
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      formVals: {
-        name: props.values.name,
-        desc: props.values.desc,
-        key: props.values.key,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
-      },
-      currentStep: 0,
-    };
-
-    this.formLayout = {
-      labelCol: { span: 7 },
-      wrapperCol: { span: 13 },
-    };
-  }
-
-  handleNext = currentStep => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue , fileList } = this.state;
-    // console.log("fieldsValue", currentStep)
-    form.validateFields((err, fieldsValue) => {
-      // if (err) {
-      //   message.error("input file")
-      //   return;
-      // }
-
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          console.log("currentStep1", currentStep)
-          if (currentStep > 1) {
-            this.forward();
-          } else {
-            handleUpdate(fileList);
-          }
-        }
-      );
-    });
-  };
-
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
-    });
-  };
-
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
-    });
-  };
-  uploadFile = (info) => {
-    console.log("uploadFile", info)
-    let fileList = [...info.fileList];
-
-    // 1. Limit the number of uploaded files
-    // Only to show two recent uploaded files, and old ones will be replaced by the new
-    fileList = fileList.slice(-1);
-
-    // 2. Read from response and show file link
-    fileList = fileList.map((file) => {
-      if (file.response) {
-        // Component will show file.url as link
-        file.url = file.response.url;
-      }
-      return file;
-    });
-    console.log("uploadFile", fileList)
-    this.setState({ fileList });
-  }
-  renderContent = (currentStep, formVals) => {
-    const { form } = this.props;
-    // if (currentStep === 1) {
-    //   return [
-    //     <FormItem key="target" {...this.formLayout} label="监控对象">
-    //       {form.getFieldDecorator('target', {
-    //         initialValue: formVals.target,
-    //       })(
-    //         <Select style={{ width: '100%' }}>
-    //           <Option value="0">表一</Option>
-    //           <Option value="1">表二</Option>
-    //         </Select>
-    //       )}
-    //     </FormItem>,
-    //     <FormItem key="template" {...this.formLayout} label="规则模板">
-    //       {form.getFieldDecorator('template', {
-    //         initialValue: formVals.template,
-    //       })(
-    //         <Select style={{ width: '100%' }}>
-    //           <Option value="0">规则模板一</Option>
-    //           <Option value="1">规则模板二</Option>
-    //         </Select>
-    //       )}
-    //     </FormItem>,
-    //     <FormItem key="type" {...this.formLayout} label="规则类型">
-    //       {form.getFieldDecorator('type', {
-    //         initialValue: formVals.type,
-    //       })(
-    //         <RadioGroup>
-    //           <Radio value="0">强</Radio>
-    //           <Radio value="1">弱</Radio>
-    //         </RadioGroup>
-    //       )}
-    //     </FormItem>,
-    //   ];
-    // }
-    // if (currentStep === 2) {
-    //   return [
-    //     <FormItem key="time" {...this.formLayout} label="开始时间">
-    //       {form.getFieldDecorator('time', {
-    //         rules: [{ required: true, message: '请选择开始时间！' }],
-    //       })(
-    //         <DatePicker
-    //           style={{ width: '100%' }}
-    //           showTime
-    //           format="YYYY-MM-DD HH:mm:ss"
-    //           placeholder="选择开始时间"
-    //         />
-    //       )}
-    //     </FormItem>,
-    //     <FormItem key="frequency" {...this.formLayout} label="调度周期">
-    //       {form.getFieldDecorator('frequency', {
-    //         initialValue: formVals.frequency,
-    //       })(
-    //         <Select style={{ width: '100%' }}>
-    //           <Option value="month">月</Option>
-    //           <Option value="week">周</Option>
-    //         </Select>
-    //       )}
-    //     </FormItem>,
-    //   ];
-    // }
-    const props = {
-      name: 'file',
-      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-      multiple: false,
-      onChange: this.uploadFile
-    };
-    
-    return [
-      // <FormItem key="name" {...this.formLayout} label="Name">
-      //   {form.getFieldDecorator('name', {
-      //     rules: [{ required: true, message: 'Please enter your name' }],
-      //     initialValue: formVals.name,
-      //   })(<Input placeholder="Name" />)}
-      // </FormItem>,
-      // <FormItem key="desc" {...this.formLayout} label="Description">
-      //   {form.getFieldDecorator('desc', {
-      //     rules: [{ required: true, message: 'Description', min: 5 }],
-      //     initialValue: formVals.desc,
-      //   })(<TextArea rows={4} placeholder="Description" />)}
-      // </FormItem>,
-      <FormItem key="upload-file" {...this.formLayout} label="File">
-      {form.getFieldDecorator('file', {
-          rules: [{ required: true}],
-      })
-      (<Dragger  {...props} >
-          <p className="ant-upload-drag-icon">
-            <Icon type="inbox" />
-          </p>
-          <p className="ant-upload-text">Click or drag file to this area to upload</p>
-          <p className="ant-upload-hint">
-            Support for a single or bulk upload. Strictly prohibit from uploading company data or
-            other band files
-          </p>
-        </Dragger>
-      )}</FormItem>
-    ];
-  };
-
-  renderFooter = currentStep => {
-    const { handleUpdateModalVisible, values } = this.props;
-    if (currentStep === 1) {
-      return [
-        <Button key="back" style={{ float: 'left' }} onClick={this.backward}>
-          上一步
-        </Button>,
-        <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-          取消
-        </Button>,
-        <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
-          下一步
-        </Button>,
-      ];
-    }
-    if (currentStep === 2) {
-      return [
-        <Button key="back" style={{ float: 'left' }} onClick={this.backward}>
-          Trở Lại
-        </Button>,
-        <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-          Cancel
-        </Button>,
-        <Button key="submit" type="primary" onClick={() => this.handleNext(currentStep)}>
-          Submit
-        </Button>,
-      ];
-    }
-    return [
-      <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-        Cancel
-      </Button>,
-      <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
-        Next
-      </Button>,
-    ];
-  };
-
-  render() {
-    const { updateModalVisible, handleUpdateModalVisible, values } = this.props;
-    const { currentStep, formVals } = this.state;
-
-    return (
-      <Modal
-        width={640}
-        bodyStyle={{ padding: '32px 40px 48px' }}
-        destroyOnClose
-        title="Import From Excel"
-        visible={updateModalVisible}
-        footer={this.renderFooter(currentStep)}
-        onCancel={() => handleUpdateModalVisible(false, values)}
-        afterClose={() => handleUpdateModalVisible()}
-      >
-        <Steps style={{ marginBottom: 28 }} size="small" current={currentStep}>
-          <Step title="Upload File" />
-          <Step title="Convert" />
-          <Step title="Complete" />
-        </Steps>
-        {this.renderContent(currentStep, formVals)}
-      </Modal>
-    );
-  }
-}
 
 /* eslint react/no-multi-comp:0 */
+
 @connect(({ supplier, customer, loading }) => ({
   supplier,
   customer: customer,
@@ -410,8 +159,7 @@ class Orders extends PureComponent {
   columns = [
     {
       title: 'Tên',
-      dataIndex: 'name',
-      render: (text, order) => <a onClick={() => this.previewItem(order.id)}>{text}</a>,
+      dataIndex: 'name'
     },
     {
       title: 'Số Điện Thoại',
@@ -425,14 +173,6 @@ class Orders extends PureComponent {
       // needTotal: true,
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      sorter: true,
-      // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-
-      // needTotal: true,
-    },
-    {
       title: 'Mã Số Thuế',
       dataIndex: 'ma_so_thue',
       sorter: true,
@@ -441,9 +181,28 @@ class Orders extends PureComponent {
       // needTotal: true,
     },
     {
+      title: 'sale_force',
+      dataIndex: 'sale_force',
+      // sorter: true,
+      // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+
+      // needTotal: true,
+    },
+    {
+      title: 'email',
+      dataIndex: 'email',
+    },
+    {
+      title: 'cc email',
+      dataIndex: 'cc_email',
+      render: val => <div style={{width: '200px',  wordWrap: 'break-word'}}>{val}</div>,
+    },
+
+    {
       title: 'Ghi Chú',
       dataIndex: 'note',
     },
+   
     {
       title: 'Cập Nhật lúc',
       dataIndex: 'updatedAt',
@@ -597,7 +356,19 @@ class Orders extends PureComponent {
       stepFormValues: record || {},
     });
   };
-
+  onUpdateSupplier = (e) =>{
+    var data = {suppliers: e}
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'supplier/update',
+      payload: data,
+      callback: () => {
+        message.success('Update Đơn Hàng Thành Công');
+        this.componentDidMount();
+        this.handleModalVisible();
+      },
+    });
+  }
   handleAdd = fields => {
     console.log(fields)
     const { dispatch } = this.props;
@@ -614,147 +385,11 @@ class Orders extends PureComponent {
     });
   };
 
-  handleUpdate = fileList => {
-    const { dispatch } = this.props;
-    const formData = new FormData();
-    formData.append("file",fileList[0].originFileObj)
-    // formData.append("aa","aa")
-    // console.log("data",fileList[0].originFileObj, formData)
-    dispatch({
-      type: 'supplier/upload',
-      payload: {
-        data: formData
-      },
-      callback : ()=>{
-        message.success('Upload thành công');
-        this.componentDidMount()
-        this.handleUpdateModalVisible();
-      }
-    });
-
-    
-  }
-  
-  renderSimpleForm() {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="Name">
-              {getFieldDecorator('name')(<Input placeholder="Name" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="Status">
-              {getFieldDecorator('status')(
-                <Select placeholder="" style={{ width: '100%' }}>
-                  <Option value="0">0</Option>
-                  <Option value="1">1</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                Search
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                Reset
-              </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                More <Icon type="down" />
-              </a>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
-  }
-
-  renderAdvancedForm() {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="Name">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="Status">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="调用次数">
-              {getFieldDecorator('number')(<InputNumber style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="更新日期">
-              {getFieldDecorator('date')(
-                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status3')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status4')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-        </Row>
-        <div style={{ overflow: 'hidden' }}>
-          <div style={{ marginBottom: 24 }}>
-            <Button type="primary" htmlType="submit">
-              查询
-            </Button>
-            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-              重置
-            </Button>
-            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-              收起 <Icon type="up" />
-            </a>
-          </div>
-        </div>
-      </Form>
-    );
-  }
-
-  renderForm() {
-    const { expandForm } = this.state;
-    return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
-  }
 
   render() {
+    const {
+      form: { getFieldDecorator },
+    } = this.props;
     const {
       supplier: { data },
       loading,
@@ -783,21 +418,21 @@ class Orders extends PureComponent {
       handleUpdate: this.handleUpdate,
     };
     return (
-      <PageHeaderWrapper title="Products">
+      <PageHeaderWrapper title="Nhà Cung Cấp">
         <Card bordered={false}>
           <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderForm()}</div>
+            {/* <div className={styles.tableListForm}>{this.renderForm()}</div> */}
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                Tạo Nhà Cung Cấp Mới
+                Thêm Nhà Cung Cấp Mới
               </Button>
-              <Button
+              {/* <Button
                 icon="plus"
                 type="primary"
                 onClick={() => this.handleUpdateModalVisible(true)}
               >
                 Import
-              </Button>
+              </Button> */}
               {selectedRows.length > 0 && (
                 <span>
                   <Button>Select All</Button>
@@ -810,24 +445,19 @@ class Orders extends PureComponent {
                 </span>
               )}
             </div>
-            <StandardTable
-              selectedRows={selectedRows}
-              loading={loading}
-              data={orderData}
-              columns={this.columns}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-            />
+            {getFieldDecorator('members', {
+              initialValue: orderData,
+            })(<SupplierTableForm onUpdateSupplier={this.onUpdateSupplier} />)}
           </div>
         </Card>
         <CreateForm {...parentMethods} modalVisible={modalVisible} customer={customer.data} />
-        {stepFormValues ? (
+        {/* {stepFormValues ? (
           <UpdateForm
             {...updateMethods}
             updateModalVisible={updateModalVisible}
             values={stepFormValues}
           />
-        ) : null}
+        ) : null} */}
       </PageHeaderWrapper>
     );
   }

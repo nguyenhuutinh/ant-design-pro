@@ -145,10 +145,10 @@ export async function querySupplierDetail(params) {
 
 
 export async function updateSupplier(params = {}) {
-  return request(`/api/v1/import/supplier?${stringify(params.query)}`, {
+  return request('/api/v1/supplier', {
     method: 'POST',
     data: {
-      ...params.body
+      ...params,
     },
   });
 }

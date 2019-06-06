@@ -302,7 +302,7 @@ class OrderDetail extends Component {
                 <b>{orderDetail.order_name}</b>
               </Description>
               <Description term="EMAIL NGƯỜI ĐẶT HÀNG ">
-                <b>{orderDetail.customer && orderDetail.customer.email}</b>
+                <b>{orderDetail.order_email}</b>
               </Description>
               <Description term="ĐỊA CHỈ GIAO HÀNG">
                 <b>{orderDetail.delivery_address}</b>
@@ -310,10 +310,10 @@ class OrderDetail extends Component {
               <Description term="TIME GIAO HÀNG">
                 <b>{orderDetail.delivery_time_str}</b>
               </Description>
-              <Description term="SALES FORCE">{orderDetail.sale_force}</Description>
-              <Description term="HOTLINE DELI">{orderDetail.hotline_deli}</Description>
-              <Description term="EMAIL">{orderDetail.email}</Description>
-              <Description term="CC QUA E-MAIL">{orderDetail.cc_email}</Description>
+              <Description term="SALES FORCE">{orderDetail.supplier && orderDetail.supplier.sale_force}</Description>
+              <Description term="HOTLINE DELI">{orderDetail.supplier && orderDetail.supplier.hotline_deli}</Description>
+              <Description term="EMAIL">{orderDetail.supplier && orderDetail.supplier.email}</Description>
+              <Description term="CC QUA E-MAIL">{orderDetail.supplier && orderDetail.supplier.cc_email}</Description>
               <Description term="LƯU Ý">{orderDetail.note}</Description>
             </DescriptionList>
             <Divider style={{ marginBottom: 32 }} />
