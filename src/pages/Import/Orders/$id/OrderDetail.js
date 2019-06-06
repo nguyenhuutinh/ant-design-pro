@@ -133,7 +133,7 @@ class OrderDetail extends Component {
     const { order = {}, loading, products = {} } = this.props;
     const { data: productList = [] } = products.data || {};
     const { modalVisible, selectedRows = [] } = this.state;
-    const { productDetail= [], customer = {} } = order.data || {};
+    const { productDetail= [] } = order.data || {};
     console.log('productDetail', productDetail);
     const orderDetail = order.data || {};
     // let goodsData = [];
@@ -292,7 +292,7 @@ class OrderDetail extends Component {
             <DescriptionList size="large" title="Thông tin NCC" style={{ marginBottom: 32 }}>
               {/* <Description term="Mã Khách Hàng"><b>{customer._id}</b></Description> */}
               <Description term="Tên Nhà Cung Cấp">
-                <b>{customer.name}</b>
+                <b>{orderDetail.supplier && orderDetail.supplier.name}</b>
               </Description>
               {/* <Description term="Email"><b>{customer.email}</b></Description> */}
             </DescriptionList>
