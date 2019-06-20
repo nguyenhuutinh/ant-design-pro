@@ -364,7 +364,7 @@ class Orders extends PureComponent {
     },
     {
       title: 'Cập Nhật lúc',
-      dataIndex: 'updatedAt',
+      dataIndex: 'updated_at',
       sorter: true,
       render: val => <span>{moment(val).format('HH:mm - DD/MM')}</span>,
     },

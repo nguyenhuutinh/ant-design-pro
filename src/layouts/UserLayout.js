@@ -14,23 +14,23 @@ const links = [
   {
     key: 'help',
     title: formatMessage({ id: 'layout.user.link.help' }),
-    href: '',
+    href: '#',
   },
   {
     key: 'privacy',
     title: formatMessage({ id: 'layout.user.link.privacy' }),
-    href: '',
+    href: '#',
   },
   {
     key: 'terms',
     title: formatMessage({ id: 'layout.user.link.terms' }),
-    href: '',
+    href: '#',
   },
 ];
 
 const copyright = (
   <Fragment>
-    Copyright <Icon type="copyright" /> 2019 蚂蚁金服体验技术部出品
+    Copyright <Icon type="copyright" /> 2019 Thousandhands.com
   </Fragment>
 );
 
