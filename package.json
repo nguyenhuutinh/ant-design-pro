@@ -7,7 +7,7 @@
     "presite": "cd functions && npm install",
     "start": "cross-env APP_TYPE=site umi dev",
     "qc": "cross-env MOCK=none umi build; rsync -e 'ssh -p 2222' -azP dist root@139.99.45.205:/home/nvl.greeno.vn/public_html/",
-    "prod": "UMI_ENV=prod umi build; rsync -azP dist deploy@admin2.supercab.com.hk:/home/supercab.info/public_html",
+    "prod": "cross-env MOCK=none umi build; rsync -e 'ssh' -azP dist root@45.76.161.226:/var/www/green-v2",
     "start:no-mock": "cross-env MOCK=none umi dev",
     "build": "umi build",
     "site": "npm run presite && cross-env APP_TYPE=site npm run build && firebase deploy && npm run docker:push",
